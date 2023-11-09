@@ -1,60 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../supabase';
+import { useRouter } from 'next/router';
+
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
+  useEffect(() => {
+    async function checkSession() {
+      const { data, error } = await (supabase as NonNullable<typeof supabase>).auth.getSession();
+      if (data.session) {
+        router.push('/'); // Redirect pengguna ke halaman utama jika sudah masuk
+      }
+    }
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+    checkSession();
+  }, [router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async () => {
+    const { data, error } = await (supabase as NonNullable<typeof supabase>).auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
 
-    // Implement your login logic here
-    if (email && password) {
-      // You can send a request to your authentication endpoint
-      // and handle the response accordingly
-      console.log(`Logging in with email: ${email} and password: ${password}`);
+    if (error) {
+      console.error('Gagal login:', error.message);
+      console.log('user : ', data);
     } else {
-      console.log('Please enter valid email and password.');
+      console.log('Berhasil login:', data);
+      router.push('/')
     }
   };
-
+  
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={handleEmailChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={handlePasswordChange}
-            required
-          />
-        </div>
-        <div>
-          <button type="submit">Login</button>
-        </div>
-      </form>
+    <div className='w-full h-screen flex items-start font-poppins'>      
+      <div className='w-1/2 h-full flex flex-col'>
+        <img src = '/images/LibraryImage.png' className='w-full h-full object-cover'/>
+      </div> 
+
+      <div className='w-1/2 h-full bg-[#42898C] flex flex-col p-20 justify-between'>
+        <form className='max-w-[400] w-full mx-auto p-4'>
+          <h2 className='text-7xl font-bold font-poppins text-center py-9 mb-11 text-white'>Login</h2>
+          <div className='flex flex-col py-2'>
+            <label className='text-white text-2xl font-poppins'>Email:</label>   
+            <input 
+              type="email"
+              placeholder='Type your email'
+              className='w-full text-black text-2xl font-poppins py-8 px-8 my-2 outline-none focus:outline-none rounded-lg' 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}/>
+          </div>
+          <div className='flex flex-col py-2'>
+            <label className='text-white text-2xl font-poppins'>Password:</label>
+            <input 
+              type="password"
+              placeholder='Type your password'
+              className='w-full text-black text-2xl font-poppins py-8 px-8 my-2 outline-none focus:outline-none rounded-lg' 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}/>
+          </div>
+          <div className='flex justify-between'>
+            <p className='flex items-center text-white text-lg'>
+              <input className='mr-2' type="checkbox" />Remember Me
+            </p>
+            <p className='text-white underline text-lg'>Forgot Password?</p>
+          </div>
+          <button onClick={handleLogin} className='w-full text-white text-3xl font-poppins py-7 my-12 bg-[#C86F43] outline-none focus:outline-none rounded-lg'>Login</button>
+        </form>
+      </div>
     </div>
-  );
-};
+  )
+    
+}
 
 export default Login;
