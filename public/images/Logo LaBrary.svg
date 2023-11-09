@@ -1,0 +1,21 @@
+<svg width="91" height="86" viewBox="0 0 91 86" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Logo LaBrary">
+<path id="Rectangle 5" d="M38.1016 2.97731C43.3532 -1.21277 47.7667 -0.765824 51.9568 2.97731C51.007 23.2014 53.4093 32.0843 51.9568 52.4759H38.1016C39.4983 32.9782 37.0401 23.9835 38.1016 2.97731Z" fill="url(#paint0_linear_218_3932)"/>
+<path id="Rectangle 6" d="M17.542 48.0066C37.2632 50.4648 46.2579 39.1796 66.3701 48.0066V68.901H17.542V48.0066Z" fill="url(#paint1_linear_218_3932)"/>
+<path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M9.84031 12.8724C3.68213 20.5745 0 30.3426 0 40.9708C0 65.8397 20.1602 86 45.0292 86C69.8981 86 90.0583 65.8397 90.0583 40.9708C90.0583 29.3048 85.622 18.675 78.3443 10.6763C65.0928 7.98618 60.5584 13.674 59.6727 24.9882C63.9955 28.9509 66.7057 34.6444 66.7057 40.9708C66.7057 52.9425 57.0008 62.6474 45.0292 62.6474C33.0575 62.6474 23.3526 52.9425 23.3526 40.9708C23.3526 35.3297 25.5075 30.1918 29.039 26.3355C28.9317 26.3914 28.8241 26.4466 28.7159 26.5011C28.7159 17.4145 25.8318 8.07704 9.84031 12.8724Z" fill="url(#paint2_linear_218_3932)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_218_3932" x1="45.1317" y1="0" x2="45.1317" y2="52.4759" gradientUnits="userSpaceOnUse">
+<stop offset="0.142361" stop-color="#D46616"/>
+<stop offset="1" stop-color="#D46616" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_218_3932" x1="41.9561" y1="44.5757" x2="41.9561" y2="68.901" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D46616" stop-opacity="0"/>
+<stop offset="1" stop-color="#D46616"/>
+</linearGradient>
+<linearGradient id="paint2_linear_218_3932" x1="45.0292" y1="10.0166" x2="45.0292" y2="86" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0FA190" stop-opacity="0"/>
+<stop offset="0.479167" stop-color="#14C3AE"/>
+</linearGradient>
+</defs>
+</svg>
