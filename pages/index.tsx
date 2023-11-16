@@ -12,7 +12,7 @@ const Login: React.FC = () => {
     async function checkSession() {
       const { data, error } = await (supabase as NonNullable<typeof supabase>).auth.getSession();
       if (data.session) {
-        router.push('/'); // Redirect pengguna ke halaman utama jika sudah masuk
+        router.push('/listpeminjaman'); // Redirect pengguna ke halaman utama jika sudah masuk
       }
     }
 
@@ -20,18 +20,18 @@ const Login: React.FC = () => {
   }, [router]);
 
   const handleLogin = async () => {
-    const { data, error } = await (supabase as NonNullable<typeof supabase>).auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+    try {
+      const response = await (supabase as NonNullable<typeof supabase>).auth.signInWithPassword({
+        email: email,
+        password: password,
+      });  
 
-    if (error) {
-      console.error('Gagal login:', error.message);
-      console.log('user : ', data);
-    } else {
-      console.log('Berhasil login:', data);
-      router.push('/')
+      console.log('Berhasil login: ');
+      router.push('/listpeminjaman');
+    } catch (error) {
+      console.log('Gagal login:', error);
     }
+
   };
   
   return (
@@ -41,7 +41,7 @@ const Login: React.FC = () => {
       </div> 
 
       <div className='w-1/2 h-full bg-[#42898C] flex flex-col p-20 justify-between'>
-        <form className='max-w-[400] w-full mx-auto p-4'>
+        <div className='max-w-[400] w-full mx-auto p-4'>
           <h2 className='text-7xl font-bold font-poppins text-center py-9 mb-11 text-white'>Login</h2>
           <div className='flex flex-col py-2'>
             <label className='text-white text-2xl font-poppins'>Email:</label>   
@@ -68,7 +68,7 @@ const Login: React.FC = () => {
             <p className='text-white underline text-lg'>Forgot Password?</p>
           </div>
           <button onClick={handleLogin} className='w-full text-white text-3xl font-poppins py-7 my-12 bg-[#C86F43] outline-none focus:outline-none rounded-lg'>Login</button>
-        </form>
+        </div>
       </div>
     </div>
   )

@@ -19,9 +19,9 @@ const listPeminjaman: React.FC = () => {
         </div>
           <div className='text-[#426E6D] text-3xl font-bold flex items-center'>List Peminjaman</div>
         </div>
-        <div className='rounded-lg border-2 border-slate-200 shadow-md flex flex-col px-6'>
+        <div className='rounded-lg border-2 border-slate-200 shadow-md flex flex-col mx-12 mt-2 h-1/2'>
           <div>
-            <img src=""></img>
+            <img src="/images/LibraryImage.png"></img>
           </div>
         </div>
 
