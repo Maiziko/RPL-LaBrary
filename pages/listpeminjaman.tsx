@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 const listPeminjaman: React.FC = () => {
   return (
-    <div className='font-poppins'>
+    <div className='font-poppins grid grid-cols-2' >
       <div>
         <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>
       </div>
