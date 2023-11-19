@@ -1,32 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabase';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
+import CardListPeminjaman from '../components/CardListPeminjaman';
+// ./pages/index.tsx or ./pages/_app.tsx
 
-const listPeminjaman: React.FC = () => {
+const Arrowleft = () => (
+  <Image
+    src="/images/arrowleft.svg"
+    alt="My Image"
+    width={21}
+    height={16}
+  />
+);
+
+const Page = () => {
+  // Mark the parent component as a client component
   return (
-    <div className='font-poppins'>
-      <div>
-        <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>
-      </div>
-        
-      <div className='flex pt-8 pb-4'>
-        <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
-          <Link href="/">
-            <img src="/icon/BackButton.png" alt="" />
-          </Link>
+    <main className="bg-soft-green">
+          <Navbar/>
+          {/* <!-- Bagian Akhir Component Navigasi Bar --> */}
+          <Sidebar/>
+        <div className="flex py-10" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 500px))', paddingTop: '24px', paddingLeft: '106px', paddingBottom: '24px' }}>
+            <button className="bg-gray-green hover:bg-white py-4 px-3 rounded-full cursor-pointer top-5 left-4">
+                <Arrowleft/>
+            </button>
+            <div className="px-[30px]">
+                <span className="text-4xl font-semibold text-strong-green">List Peminjaman</span>
+            </div>
         </div>
-          <div className='text-[#426E6D] text-3xl font-bold flex items-center'>List Peminjaman</div>
-        </div>
-        <div className='rounded-lg border-2 border-slate-200 shadow-md flex flex-col mx-12 mt-2 h-1/2'>
-          <div>
-            <img src="/images/LibraryImage.png"></img>
-          </div>
-        </div>
+        <CardListPeminjaman/>
+    </main>
+  );
+};
 
-    </div>
-  )
-}
-
-export default listPeminjaman;
+export default Page;
