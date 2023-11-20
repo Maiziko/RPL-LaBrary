@@ -13,6 +13,33 @@ const LaBraryLogo = () => (
   />
 );
 
+// const UserIcon = () => (
+//   <Image
+//     src="/images/UserIcon.svg"
+//     alt="My Image"
+//     width={24}
+//     height={24}
+//   />
+// );
+
+// const LockIcon = () => (
+//   <Image
+//     src="/images/LockIcon.svg"
+//     alt="My Image"
+//     width={24}
+//     height={24}
+//   />
+// );
+
+// const SeekIcon = () => (
+//   <Image
+//     src="/images/SeekIcon.svg"
+//     alt="My Image"
+//     width={24}
+//     height={24}
+//   />
+// );
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -68,11 +95,12 @@ const Login: React.FC = () => {
           <div className="px-4 md:px-12">
             <label className="text-white text-2xl font-poppins">Email:</label>
           </div>
-          <div className="px-4 md:px-12">
+          <div className="flex px-4 md:px-12">
+            {/* <UserIcon/> */}
             <input
               type="email"
               placeholder="Type your email"
-              className="mx-auto text-black text-2xl px-4 md:px-8 lg:px-12 font-poppins py-4 w-full my-2 outline-none focus:outline-none rounded-lg"
+              className="mx-auto text-black text-2xl  md:px-8 lg:px-12 font-poppins py-4 w-full my-2 outline-none focus:outline-none rounded-lg"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -82,7 +110,8 @@ const Login: React.FC = () => {
           <div className="px-4 md:px-12">
             <label className="text-white text-2xl font-poppins">Password:</label>
           </div>
-          <div className="px-4 md:px-12">
+          <div className="flex px-4 md:px-12">
+            {/* <LockIcon/> */}
             <input
               type="password"
               placeholder="Type your password"
@@ -90,6 +119,7 @@ const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {/* <SeekIcon/> */}
           </div>
         </div>
         <div className="px-4 md:px-12 flex justify-between">
