@@ -3,7 +3,6 @@ import { supabase } from '../supabase';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { ChakraProvider, Text } from  '@chakra-ui/react'
 
 interface Buku {
   judul: string;
