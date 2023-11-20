@@ -1,44 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 
-const LaBraryLogo = () => (
-  <Image
-    src="/images/libraryLogo.svg"
-    alt="My Image"
-    width={200}
-    height={60}
-    className="left-10 top-10"
-  />
-);
-
-// const UserIcon = () => (
-//   <Image
-//     src="/images/UserIcon.svg"
-//     alt="My Image"
-//     width={24}
-//     height={24}
-//   />
-// );
-
-// const LockIcon = () => (
-//   <Image
-//     src="/images/LockIcon.svg"
-//     alt="My Image"
-//     width={24}
-//     height={24}
-//   />
-// );
-
-// const SeekIcon = () => (
-//   <Image
-//     src="/images/SeekIcon.svg"
-//     alt="My Image"
-//     width={24}
-//     height={24}
-//   />
-// );
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -49,7 +12,7 @@ const Login: React.FC = () => {
     async function checkSession() {
       const { data, error } = await (supabase as NonNullable<typeof supabase>).auth.getSession();
       if (data.session) {
-        router.push('/listpeminjaman'); // Redirect pengguna ke halaman utama jika sudah masuk
+        //router.push('/listpeminjaman'); // Redirect pengguna ke halaman utama jika sudah masuk
       }
     }
 
@@ -57,88 +20,58 @@ const Login: React.FC = () => {
   }, [router]);
 
   const handleLogin = async () => {
-    try {
-      const response = await (supabase as NonNullable<typeof supabase>).auth.signInWithPassword({
-        email: email,
-        password: password,
-      });  
+    const { data, error } = await (supabase as NonNullable<typeof supabase>).auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
 
-      console.log('Berhasil login: ');
-      router.push('/listpeminjaman');
-    } catch (error) {
-      console.log('Gagal login:', error);
+    if (error) {
+      console.error('Gagal login:', error.message);
+      console.log('user : ', data);
+    } else {
+      console.log('Berhasil login:', data);
+      router.push('/')
     }
   };
   
   return (
-    <div className="flex min-h-screen">
-        <div className="flex-1 bg-[#42898C] relative backdrop-brightness-50" style={{background: 'url(/images/labraryLoginPict.png)', backgroundSize: 'cover',}}>
-            <div className="left-10 p-10 backdrop-brightness-90">
-              <LaBraryLogo />
-            </div>
-            
-            <div className="absolute left-10 right-10 bottom-10 rounded-lg backdrop-brightness-50 p-10 text-white font-poppins">
-                <h3 className='mb-1 text-3xl font-medium'>
-                    Selamat Datang,
-                </h3>
-                <span className="text-3xl font-medium">Temukan Bukumu di <b>LaBrary!</b></span>
-            </div>
-        </div>
-        <div className="flex-1 flex items-center justify-center bg-[#42898C]">
-            
-                      <div className="w-full mx-auto p-4 flex flex-col items-center justify-center h-screen">
-      <div className="my-4">
-        <h2 className="text-5xl font-bold font-poppins text-center text-white">Welcome</h2>
-      </div>
-      <div className="flex-col py-8">
-        <div className="flex flex-col py-2 w-full md:w-auto">
-          <div className="px-4 md:px-12">
-            <label className="text-white text-2xl font-poppins">Email:</label>
-          </div>
-          <div className="flex px-4 md:px-12">
-            {/* <UserIcon/> */}
-            <input
+    <div className='flex font-poppins'>      
+      <div className='w-1/2 h-screen flex flex-col'>
+        <img src = '/images/LibraryImage.png' className='h-full object-cover'/>
+      </div> 
+
+      <div className='w-1/2 h-screen bg-[#42898C] flex flex-col justify-between'>
+        <div className='w-full px-[90px] pt-12'>
+          <h2 className='text-6xl font-bold font-poppins text-center pt-9 mb-11 text-white'>Login</h2>
+          <div className='flex flex-col py-2 mx-auto w-[475px]'>
+            <label className='text-white text-2xl font-poppins'>Email:</label>   
+            <input 
               type="email"
-              placeholder="Type your email"
-              className="mx-auto text-black text-2xl  md:px-8 lg:px-12 font-poppins py-4 w-full my-2 outline-none focus:outline-none rounded-lg"
+              placeholder='Type your email'
+              className='text-black text-xl font-poppins py-6 px-8 my-2 outline-none focus:outline-none rounded-lg' 
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+              onChange={(e) => setEmail(e.target.value)}/>
           </div>
-        </div>
-        <div className="flex flex-col py-2 w-full md:w-auto">
-          <div className="px-4 md:px-12">
-            <label className="text-white text-2xl font-poppins">Password:</label>
-          </div>
-          <div className="flex px-4 md:px-12">
-            {/* <LockIcon/> */}
-            <input
+          <div className='flex flex-col py-2 mx-auto w-[475px]'>
+            <label className='text-white text-2xl font-poppins'>Password:</label>
+            <input 
               type="password"
-              placeholder="Type your password"
-              className="mx-auto text-black text-2xl px-4 md:px-8 lg:px-12 font-poppins py-4 w-full my-2 outline-none focus:outline-none rounded-lg"
+              placeholder='Type your password'
+              className='w-full text-black text-xl font-poppins py-6 px-8 my-2 outline-none focus:outline-none rounded-lg' 
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {/* <SeekIcon/> */}
+              onChange={(e) => setPassword(e.target.value)}/>
           </div>
-        </div>
-        <div className="px-4 md:px-12 flex justify-between">
-          <p className="flex items-center text-white text-lg">
-            <input className="mx-auto" type="checkbox" />Remember Me
-          </p>
-          <p className="text-white underline text-lg">Forgot Password?</p>
-        </div>
-        <div className="py-4 my-6 flex justify-center items-center">
-          <button onClick={handleLogin} className="mx-auto text-white text-3xl font-poppins px-8 md:px-16 py-4 bg-[#C86F43] outline-none focus:outline-none rounded-lg">Login</button>
+          <div className='flex justify-between mx-auto w-[475px]'>
+            <p className='flex items-center text-white text-lg'>
+              <input className='mr-2' type="checkbox" />Remember Me
+            </p>
+            <p className='text-white underline text-lg'>Forgot Password?</p>
+          </div>
+          <button onClick={handleLogin} className='w-[475px] text-white text-2xl py-6 font-bold my-12 bg-[#C86F43] outline-none focus:outline-none rounded-lg'>Login</button>
         </div>
       </div>
     </div>
-
-
-        </div>
-    </div>
-  )
-    
+  )  
 }
 
 export default Login;
