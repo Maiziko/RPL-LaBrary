@@ -12,7 +12,7 @@ const Login: React.FC = () => {
     async function checkSession() {
       const { data, error } = await (supabase as NonNullable<typeof supabase>).auth.getSession();
       if (data.session) {
-        //router.push('/listpeminjaman'); // Redirect pengguna ke halaman utama jika sudah masuk
+        router.push('/koleksibuku'); // Redirect pengguna ke halaman utama jika sudah masuk
       }
     }
 
@@ -30,7 +30,7 @@ const Login: React.FC = () => {
       console.log('user : ', data);
     } else {
       console.log('Berhasil login:', data);
-      router.push('/')
+      router.push('/koleksibuku')
     }
   };
   
