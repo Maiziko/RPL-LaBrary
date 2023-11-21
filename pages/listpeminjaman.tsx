@@ -3,19 +3,30 @@ import Link from 'next/link';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import CardListPeminjaman from '../components/CardListPeminjaman';
+import { useState } from 'react';
+import { format, addDays } from 'date-fns';
 // ./pages/index.tsx or ./pages/_app.tsx
 
-const Arrowleft = () => (
-  <Image
-    src="/images/arrowleft.svg"
-    alt="My Image"
-    width={21}
-    height={16}
-  />
-);
 
+const ListPeminjaman: React.FC = () => {
+  const [checkboxStatus, setCheckboxStatus] = useState([false, false, false, false, false]);
 
-const listPeminjaman: React.FC = () => {
+  const handleCheckboxChange = (index: number) => {
+    setCheckboxStatus((prevStatus) => {
+      const newStatus = [...prevStatus];
+      newStatus[index] = !prevStatus[index];
+      return newStatus;
+    });
+  };
+
+  const totalBuku = checkboxStatus.filter((isChecked) => isChecked).length;
+
+  // Mendapatkan tanggal hari ini
+  const today = new Date();
+
+  // Mendapatkan tanggal pengembalian (7 hari ke depan)
+  const returnDate = addDays(today, 7);
+
   return (
     <div className='font-poppins'>
       <div>
@@ -36,7 +47,7 @@ const listPeminjaman: React.FC = () => {
           {[1, 2, 3, 4, 5].map((index) => (
             <div key={index} className='flex mt-5 ml-[70px]'>
               <div>
-                <input className='m-2 w-[40px] h-[40px] my-[90px] mr-5' type="checkbox" />
+                <input className='m-2 w-[40px] h-[40px] my-[90px] mr-5' type="checkbox" onChange={() => handleCheckboxChange(index - 1)}/>
               </div>
               <div className='rounded-lg border-2 border-slate-200 shadow-md w-[600px] flex'>
                 <div className='bg-blue-300 w-[159px] h-[203px] my-3 ml-3 rounded-lg'></div>
@@ -54,15 +65,15 @@ const listPeminjaman: React.FC = () => {
           <div className='text-[#426E6D] text-center items-center justify-center pt-4' style={{fontSize: '28px'}}>Ringkasan Peminjaman
             <div className='flex'>
               <div className='pt-7 pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Total Buku</div>
-              <div className='pt-7 pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>x</div>
+              <div className='pt-7 pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{totalBuku}</div>
             </div>
             <div className='flex'>
               <div className='pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Tanggal Pinjam</div>
-              <div className='pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>dd/mm/yyyy</div>
+              <div className='pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{format(today, 'dd/MM/yyyy')}</div>
             </div>
             <div className='flex'>
               <div className='pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Tanggal Kembali</div>
-              <div className='pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>dd/mm/yyyy</div>
+              <div className='pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{format(returnDate, 'dd/MM/yyyy')}</div>
             </div>
           </div>
           <div className='text-center items-center justify-center'>
@@ -74,4 +85,4 @@ const listPeminjaman: React.FC = () => {
   )
 }
 
-export default listPeminjaman;
+export default ListPeminjaman;
