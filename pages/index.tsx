@@ -47,7 +47,7 @@ const Login: React.FC = () => {
             <label className='text-white text-2xl font-poppins'>Email:</label>   
             <input 
               type="email"
-              placeholder='Type your email'
+              placeholder='Masukkan email Anda'
               className='text-black text-xl font-poppins py-6 px-8 my-2 outline-none focus:outline-none rounded-lg' 
               value={email}
               onChange={(e) => setEmail(e.target.value)}/>
@@ -56,7 +56,7 @@ const Login: React.FC = () => {
             <label className='text-white text-2xl font-poppins'>Password:</label>
             <input 
               type="password"
-              placeholder='Type your password'
+              placeholder='Masukkan password Anda'
               className='w-full text-black text-xl font-poppins py-6 px-8 my-2 outline-none focus:outline-none rounded-lg' 
               value={password}
               onChange={(e) => setPassword(e.target.value)}/>
@@ -65,7 +65,7 @@ const Login: React.FC = () => {
             <p className='flex items-center text-white text-lg'>
               <input className='mr-2' type="checkbox" />Remember Me
             </p>
-            <p className='text-white underline text-lg'>Forgot Password?</p>
+            <p className='text-white underline text-lg'>Lupa Kata Sandi?</p>
           </div>
           <button onClick={handleLogin} className='w-[475px] text-white text-2xl py-6 font-bold my-12 bg-[#C86F43] outline-none focus:outline-none rounded-lg'>Login</button>
         </div>
