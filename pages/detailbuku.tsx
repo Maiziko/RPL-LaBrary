@@ -74,6 +74,9 @@ const DetailBuku: React.FC<{ buku: BukuDetail }> = ({ buku }) => {
     <div className='bg-[#C6E7ED] bg-opacity-50 p-3 rounded-xl mt-3 text-justify'>Buku ini sangat baik</div>
   </div>
 </div>
+<div className='my-[50px] ml-[130px] mr-[590px] flex'>
+<button className='p-2 text-center rounded-lg ml-[200px] bg-[#426e6d] text-[#fefbfb]'>+ List Peminjaman</button>
+<div className='p-2 text-center rounded-lg ml-[30px] bg-[#c86f43] text-[#fefbfb]'>+ List Peminjaman</div></div>
 </div>
 
   );
