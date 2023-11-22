@@ -133,7 +133,7 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className="fixed rounded-r-[5px] top-0 left-0 lg:left-0 lg:w-[240px] w-60 h-screen bg-strong-green text-gray-100 transform translate-x-[-240px] transition-transform duration-300" id="sidebar">
+    <div className="fixed rounded-r-[5px] top-0 left-0 lg:left-0 lg:w-[240px] w-60 h-screen bg-primary text-gray-100 transform translate-x-[-240px] transition-transform duration-300" id="sidebar">
       {/* Tombol Tutup Sidebar */}
       <button className="bg-gray-green py-4 px-3 rounded-full cursor-pointer absolute top-5 left-4" id="close-sidebar">
         <TutupSidebar/>

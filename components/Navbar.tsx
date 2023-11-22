@@ -41,11 +41,11 @@ const Navbar = () => {
     return(
             <div>
         {/* <!-- Bagian Awal Component Navigasi Bar --> */}
-            <div className="relative min-h-screen bg-cover bg-center rounded-b-[20px]" style={{ backgroundImage: "url('/images/backgroundLibrary.png')", width: "1280px", height: "150px" }}>
+            <div className="relative min-h-screen bg-cover bg-center rounded-b-[20px]" style={{ backgroundImage: "url('/images/backgroundLibrary.png')"}}>
             <div className="absolute bottom-10 left-0 text-left p-8 text-white" style={{ paddingLeft: '150px' }}>
                 <h1 className="text-4xl">Temukan Bukumu <br /> <p className="text-4xl">di <b>LaBrary</b></p></h1>
             </div>
-                <nav className="fixed top-0 left-0 right-0 bg-strong-green p-3">
+                <nav className="fixed top-0 left-0 right-0 bg-primary p-3">
                     <div className="container">
                         <div className="flex justify-around justify-items-center">
                             {/* Tombol Burger Menu */}
