@@ -162,7 +162,7 @@ const filteredBooks =
       {filteredBooks.map((book, index) => (
         <div key={index} className='rounded-lg bg-white shadow p-4 hover:bg-yel-bro cursor-pointer'>
           <img src={book.coverbuku} className='w-auto h-48 object-cover rounded-md' alt={`${book.judul} Image`}/>
-          <div className="my-4">
+          <div className="my-4" style={{width: '200px'}}>
           <h2 className="text-xl font-semibold mt-2 overflow-hidden line-clamp-1">{book.judul}</h2>
         <p className="text-gray-500">{book.penulis}</p>
         <p className='text-gray-500 text-[12px] overflow-hidden line-clamp-2'>{book.deskripsi}</p>

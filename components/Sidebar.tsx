@@ -64,6 +64,22 @@ const KoleksiBukuOn = () => (
     height={24}
   />
 );
+const LogOutIconOff = () =>(
+  <Image
+    src="/icon/LogOutICON.svg"
+    alt="My Image"
+    width={24}
+    height={24}
+  />
+);
+const LogOutIconOn = () =>(
+  <Image
+    src="/icon/LogOutHoverIcon.svg"
+    alt="My Image"
+    width={24}
+    height={24}
+  />
+);
 
 const KoleksiBukuOffsvg = () => (
   <Image
@@ -201,6 +217,19 @@ const Sidebar = () => {
           </Link>
         </li>
       </ul>
+      <div className='mt-16'>
+        <Link href="/riwayatbukupage" className="flex px-10 py-3 w-[240px] text-white hover:bg-gray-green rounded-r-full hover:text-strong-orange text-14">
+            <div className="w-[24px] h-[24px] relative group">
+              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
+                <LogOutIconOn/>
+              </div>
+              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
+                <LogOutIconOff />
+              </div>
+            </div>
+            <span className="pl-5 my-auto text-sm">Log Out</span>
+          </Link>
+      </div>
     </div>
   );
 };
