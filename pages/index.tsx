@@ -34,6 +34,7 @@ const Login: React.FC = () => {
     }
   };
   
+  
   return (
     <div className='flex font-poppins'>      
       <div className='w-1/2 h-screen flex flex-col'>
