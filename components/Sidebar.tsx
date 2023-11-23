@@ -68,8 +68,25 @@ const Sidebar = () => {
       console.error('Error logging out:', (error as Error).message);
     }
   };
-  
 
+  // Fungsi untuk menutup sidebar
+  const hideSidebar = () => {
+    const sidebar = document.getElementById("sidebar") as HTMLElement | null;
+    if (sidebar) {
+      sidebar.classList.add("transform", "translate-x-[-240px]");
+    }
+  };
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    const sidebar = document.getElementById("sidebar") as HTMLElement | null;
+    const target = event.target as HTMLElement;
+
+    // Periksa apakah yang diklik adalah di luar sidebar
+    if (sidebar && !sidebar.contains(target)) {
+      hideSidebar();
+    }
+  };
+  
   useEffect(() => {
     const burgerMenuButton = document.getElementById("burger-menu");
     if (burgerMenuButton) {
@@ -81,6 +98,8 @@ const Sidebar = () => {
       closeSidebarButton.addEventListener("click", hideSidebar);
     }
 
+    document.addEventListener("mousedown", handleOutsideClick);
+
     return () => {
       if (burgerMenuButton) {
         burgerMenuButton.removeEventListener("click", showSidebar);
@@ -88,6 +107,7 @@ const Sidebar = () => {
       if (closeSidebarButton) {
         closeSidebarButton.removeEventListener("click", hideSidebar);
       }
+      document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
 

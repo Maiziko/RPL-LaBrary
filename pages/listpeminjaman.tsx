@@ -4,6 +4,7 @@ import { format, addDays } from 'date-fns';
 import { supabase } from '../supabase';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import ModalListPeminjaman from '../components/ModalListPeminjaman';
 // import TambahPeminjaman from '../pages/detailbuku'
 
 // ./pages/index.tsx or ./pages/_app.tsx
@@ -21,6 +22,7 @@ const ListPeminjaman: React.FC = () => {
   const [daftarPeminjaman, setDaftarPeminjaman] = useState<any[]>([]);
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
   const [checkboxStatus, setCheckboxStatus] = useState<boolean[]>(Array().fill(false));
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchPeminjamanData = async () => {
@@ -69,7 +71,7 @@ const ListPeminjaman: React.FC = () => {
     fetchPeminjamanData();
   }, []);
   
-  
+  // Menambahkan ke list peminjaman
   const handleTambahPeminjaman = async (idBuku: string) => {
     try {
       // Menambahkan buku ke list_peminjaman
@@ -125,6 +127,14 @@ const ListPeminjaman: React.FC = () => {
 
   // Mendapatkan tanggal pengembalian (7 hari ke depan)
   const returnDate = addDays(today, 7);
+
+  const handlePinjamClick = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   return (
     <div className='font-poppins'>
@@ -197,7 +207,22 @@ const ListPeminjaman: React.FC = () => {
             </div>
           </div>
           <div className='text-center items-center justify-center'>
-            <button className='w-[126px] text-white py-3 mt-10 mb-4 bg-[#C86F43] rounded-lg' style={{fontSize: '20px'}}>Pinjam</button>
+            <button
+              className={`w-[126px] text-white py-3 mt-10 mb-4 bg-[#C86F43] rounded-lg ${totalBuku === 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+              style={{ fontSize: '20px' }}
+              onClick={totalBuku > 0 ? handlePinjamClick : undefined}
+              disabled={totalBuku === 0}
+            >
+              Pinjam
+            </button>
+            <ModalListPeminjaman
+              isOpen={modalOpen}
+              onClose={handleModalClose}
+              selectedBooks={daftarPeminjaman
+                .filter((_, index) => checkboxStatus[index])
+                .map(peminjaman => peminjaman.buku.judul)}
+              returnDate={format(returnDate, 'dd/MM/yyyy')} // Pass the return date
+            />
           </div>
           {/* <TambahPeminjaman onTambah={handleTambahPeminjaman}/> */}
         </div>
