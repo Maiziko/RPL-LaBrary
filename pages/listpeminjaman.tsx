@@ -4,40 +4,91 @@ import { format, addDays } from 'date-fns';
 import { supabase } from '../supabase';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+// import TambahPeminjaman from '../pages/detailbuku'
 
 // ./pages/index.tsx or ./pages/_app.tsx
 interface Buku {
+  id_buku: string;
   judul: string;
   penulis: string;
-  deskripsi: string;
-  coverbuku: string;
+  penerbit: string;
+  coverbuku: string
+  tahun_terbit: string
+  cover_buku: string;
 }
 
 const ListPeminjaman: React.FC = () => {
+  const [daftarPeminjaman, setDaftarPeminjaman] = useState<any[]>([]);
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
   const [checkboxStatus, setCheckboxStatus] = useState<boolean[]>(Array().fill(false));
 
   useEffect(() => {
-    const fetchBookData = async () => {
+    const fetchPeminjamanData = async () => {
       try {
-        const { data, error } = await supabase?.from('buku').select('coverbuku, judul, penulis, deskripsi') || {};
-    
-        console.log('Data:', data); // Check this log
-        console.log('Error:', error); // Check this log
-    
-        if (error) {
-          console.error('Error fetching book data:', error.message);
+        const { data: peminjamanData, error: peminjamanError } = await supabase
+          .from('list_peminjaman')
+          .select('id_buku');
+  
+        if (peminjamanError) {
+          console.error('Error fetching peminjaman data:', peminjamanError.message);
           return;
         }
-    
-        // Tetapkan data buku ke dalam state
-        setDaftarBuku(data || []);
+  
+        const idBukus = peminjamanData.map((peminjaman) => peminjaman.id_buku);
+  
+        if (idBukus.length === 0) {
+          // If there are no id_buku values, set an empty array for bukuData
+          setDaftarPeminjaman([]);
+          setDaftarBuku([]);
+          return;
+        }
+  
+        // Fetching buku data based on the extracted id_bukus
+        const { data: bukuData, error: bukuError } = await supabase
+          .from('buku')
+          .select('id_buku, judul, penulis, penerbit, tahun_terbit, cover_buku')
+          .in('id_buku', idBukus);
+  
+        if (bukuError) {
+          console.error('Error fetching buku data:', bukuError.message);
+          return;
+        }
+  
+        // Combining peminjamanData with bukuData
+        const combinedData = peminjamanData.map((peminjaman) => {
+          const buku = bukuData.find((buku) => buku.id_buku === peminjaman.id_buku);
+          return { ...peminjaman, buku };
+        });
+  
+        setDaftarPeminjaman(combinedData || []);
       } catch (error) {
-        console.error('Error fetching book data:', (error as any).message);
+        console.error('Error fetching peminjaman data:', (error as any).message);
       }
     };
-    fetchBookData();
-  }, []); // Dependency array
+  
+    fetchPeminjamanData();
+  }, []);
+  
+  
+  const handleTambahPeminjaman = async (idBuku: string) => {
+    try {
+      // Menambahkan buku ke list_peminjaman
+      const { data, error } = await supabase
+        .from('list_peminjaman')
+        .upsert([{ id_buku: idBuku }], { onConflict: ['id_buku'] });
+
+      if (error) {
+        console.error('Error adding item:', error.message);
+        return;
+      }
+
+      // Menampilkan buku yang baru ditambahkan dengan memperbarui state
+      const bukuBaru = daftarBuku.find((buku) => buku.id_buku === idBuku);
+      setDaftarPeminjaman((prevData) => [...prevData, { buku: bukuBaru }]);
+    } catch (error) {
+      console.error('Error adding item:', (error as any).message);
+    }
+  };
   
   const handleCheckboxChange = (index: number) => {
     setCheckboxStatus((prevStatus) => {
@@ -45,6 +96,26 @@ const ListPeminjaman: React.FC = () => {
       newStatus[index] = !prevStatus[index];
       return newStatus;
     });
+  };
+
+  const handleDelete = async (idBuku: string) => {
+    try {
+      // Hapus item dari tabel list_peminjaman berdasarkan id_buku
+      const { data, error } = await supabase
+        .from('list_peminjaman')
+        .delete()
+        .eq('id_buku', idBuku);
+
+      if (error) {
+        console.error('Error deleting item:', error.message);
+        return;
+      }
+
+      // Update state setelah penghapusan
+      setDaftarPeminjaman((prevData) => prevData.filter((item) => item.buku.id_buku !== idBuku));
+    } catch (error) {
+      console.error('Error deleting item:', (error as any).message);
+    }
   };
 
   const totalBuku = checkboxStatus.filter((isChecked) => isChecked).length;
@@ -60,7 +131,7 @@ const ListPeminjaman: React.FC = () => {
       <div>
         <Navbar/>
         <Sidebar/>
-        <img src='/images/BackgroundLabrary.png' className='bg-red-300 w-full h-full' alt="gambar background"/>
+        <img src='/images/BackgroundLabrary.png' className='w-full h-full' alt="gambar background"/>
       </div>
         
       <div className='flex pt-8 pb-4'>
@@ -72,9 +143,9 @@ const ListPeminjaman: React.FC = () => {
         <div className='text-[#426E6D] font-bold flex items-center' style={{fontSize: '40px'}}>List Peminjaman</div>
       </div>
 
-      <div className='flex'>
+      <div className='flex' style={{ marginTop: daftarPeminjaman.length === 0 ? '0' : 'initial' }}>
         <div className='mt-5 mb-8'>
-          {daftarBuku.map((buku, index) => (
+          {daftarPeminjaman.map((peminjaman, index) => (
             <div key={index} className='flex mt-5 ml-[70px]'>
               <div>
                 <input
@@ -85,11 +156,25 @@ const ListPeminjaman: React.FC = () => {
                 />
               </div>
               <div className='rounded-lg border-2 border-slate-200 shadow-md w-[600px] flex'>
-                <div className='bg-blue-300 w-[159px] h-[203px] my-3 ml-3 rounded-lg'></div>
+                {/* Menggunakan informasi yang diambil dari hasil penggabungan */}
+                <div
+                  className='bg-white w-[159px] h-[203px] my-3 ml-3 rounded-lg'
+                  style={{ backgroundImage: `url(${peminjaman.buku.cover_buku})`, backgroundSize: 'cover' }}
+                ></div>
                 <div className='pl-[18px] w-[400px]'>
-                  <div className='pt-[7px] font-bold' style={{fontSize: '32px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{buku.judul}</div>
-                  <div className='pt-[7px]' style={{fontSize: '20px'}}>{buku.penulis}</div>
-                  <div className='text-[#9E9FA1]  w-[350px] overflow-hidden' style={{fontSize: '16px', textOverflow: 'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2}}>{buku.deskripsi}</div>
+                  <div className='pt-[7px] font-bold' style={{fontSize: '32px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                    {peminjaman.buku.judul}
+                  </div>
+                  <div className='pt-[7px]' style={{fontSize: '20px'}}>{peminjaman.buku.penulis}</div>
+                  <div className='text-[#9E9FA1]  w-[350px] overflow-hidden' style={{fontSize: '16px', textOverflow: 'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2}}>
+                    Penerbit: {peminjaman.buku.penerbit}, Tahun Terbit: {peminjaman.buku.tahun_terbit}
+                  </div>
+                  <button
+                    className='text-right w-[400px] text-[15px] pt-[75px] pr-2'
+                    onClick={() => handleDelete(peminjaman.buku.id_buku)}
+                  >
+                    <div className='text-[#C86F43]'>Hapus</div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -114,6 +199,7 @@ const ListPeminjaman: React.FC = () => {
           <div className='text-center items-center justify-center'>
             <button className='w-[126px] text-white py-3 mt-10 mb-4 bg-[#C86F43] rounded-lg' style={{fontSize: '20px'}}>Pinjam</button>
           </div>
+          {/* <TambahPeminjaman onTambah={handleTambahPeminjaman}/> */}
         </div>
       </div>
     </div>
