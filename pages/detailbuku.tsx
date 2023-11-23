@@ -30,7 +30,7 @@ const DetailBuku: React.FC<Props> = ({ bukuId }) => {
         if (!supabase) {
           throw new Error('Supabase client is null');
         }
-        
+
         const { data: bukuData, error } = await supabase
           .from('buku')
           .select('*')
@@ -121,4 +121,5 @@ const DetailBuku: React.FC<Props> = ({ bukuId }) => {
 };
 
 export default DetailBuku;
+
 
