@@ -1,7 +1,9 @@
 // components/Sidebar.tsx
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image'
+import { supabase } from '../supabase';
 
 const ProfilePicture = () => (
   <Image
@@ -14,12 +16,7 @@ const ProfilePicture = () => (
 );
 
 const TutupSidebar = () => (
-  <Image
-    src="/images/arrowleft.svg"
-    alt="My Image"
-    width={21}
-    height={16}
-  />
+  <img src="icon/BackButtonSideBar.png" className='w-[30px]' alt="" />
 );
 
 const Homeon = () => (
@@ -59,6 +56,22 @@ const ListPeminjamanOff = () => (
 const KoleksiBukuOn = () => (
   <Image
     src="/images/koleksiBukuOn.png"
+    alt="My Image"
+    width={24}
+    height={24}
+  />
+);
+const LogOutIconOff = () =>(
+  <Image
+    src="/icon/LogOutICON.svg"
+    alt="My Image"
+    width={24}
+    height={24}
+  />
+);
+const LogOutIconOn = () =>(
+  <Image
+    src="/icon/LogOutHoverIcon.svg"
     alt="My Image"
     width={24}
     height={24}
@@ -107,7 +120,26 @@ function hideSidebar() {
   }
 }
 
+
 const Sidebar = () => {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      const { error }: { error: Error | null } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Error logging out:', error.message);
+      } else {
+        // Redirect to the home page after successful logout
+        router.push('/');
+        console.log('User logged out successfully');
+      }
+    } catch (error) {
+      console.error('Error logging out:', (error as Error).message);
+    }
+  };
+  
+
   useEffect(() => {
     // Event listener untuk tombol "Burger Menu"
     const burgerMenuButton = document.getElementById("burger-menu");
@@ -133,7 +165,7 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className="fixed rounded-r-[5px] top-0 left-0 lg:left-0 lg:w-[240px] w-60 h-screen bg-strong-green text-gray-100 transform translate-x-[-240px] transition-transform duration-300" id="sidebar">
+    <div className="fixed rounded-r-[5px] top-0 left-0 lg:left-0 lg:w-[240px] w-60 h-screen bg-primary text-gray-100 transform translate-x-[-240px] transition-transform duration-300" id="sidebar">
       {/* Tombol Tutup Sidebar */}
       <button className="bg-gray-green py-4 px-3 rounded-full cursor-pointer absolute top-5 left-4" id="close-sidebar">
         <TutupSidebar/>
@@ -201,6 +233,22 @@ const Sidebar = () => {
           </Link>
         </li>
       </ul>
+      <div className='mt-16'>
+        <button
+            className="flex px-10 py-3 w-[240px] text-white hover:bg-gray-green rounded-r-full hover:text-strong-orange text-14"
+            onClick={handleLogout}
+          >
+        <div className="w-[24px] h-[24px] relative group">
+          <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
+            <LogOutIconOn />
+          </div>
+          <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
+            <LogOutIconOff />
+          </div>
+        </div>
+        <span className="pl-5 my-auto text-sm">Log Out</span>
+        </button>
+      </div>
     </div>
   );
 };

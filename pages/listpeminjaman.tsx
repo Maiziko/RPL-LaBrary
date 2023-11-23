@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { format, addDays } from 'date-fns';
 import { supabase } from '../supabase';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
+
 // ./pages/index.tsx or ./pages/_app.tsx
 interface Buku {
   judul: string;
@@ -55,13 +58,15 @@ const ListPeminjaman: React.FC = () => {
   return (
     <div className='font-poppins'>
       <div>
-        <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>
+        <Navbar/>
+        <Sidebar/>
+        <img src='/images/BackgroundLabrary.png' className='bg-red-300 w-full h-full' alt="gambar background"/>
       </div>
         
       <div className='flex pt-8 pb-4'>
         <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
           <Link href="/koleksibuku">
-            <img src="/icon/BackButton.png" alt="" className='w-[54px] h-[54px]'/>
+            <img src="/icon/BackButton.png"/>
           </Link>
         </div>
         <div className='text-[#426E6D] font-bold flex items-center' style={{fontSize: '40px'}}>List Peminjaman</div>
