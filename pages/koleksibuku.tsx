@@ -3,8 +3,7 @@ import { supabase } from '../supabase';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
+
 interface Buku {
   judul: string;
   penulis: string;
@@ -14,42 +13,6 @@ interface Buku {
   kategori: string;
 }
 type KategoriBuku = Record<string, Buku[]>;
-
-const ImageComponent = () => (
-  <Image
-    src="/images/sandwichMenu.svg"
-    alt="My Image"
-    width={40}
-    height={40}
-  />
-);
-
-const SearchImage = () => (
-  <Image
-    src="/images/searchBar.svg"
-    alt="My Image"
-    width={30}
-    height={30}
-  />
-);
-
-const LaBraryLogo = () => (
-  <Image
-    src="/images/libraryLogo.svg"
-    alt="My Image"
-    width={152}
-    height={40}
-  />
-);
-
-const ProfilePicture = () => (
-  <Image
-    src="/images/ProfilePictureSideMenu.svg"
-    alt="My Image"
-    width={40}
-    height={40}
-  />
-);
 
 const koleksiBuku: React.FC = () => {
   const [selectedButton, setSelectedButton] = useState('Semua');
@@ -116,8 +79,9 @@ const filteredBooks =
   
   return (
     <div className='font-poppins'>
-        <Navbar/>
-        <Sidebar/>
+      <div>
+        <img src="/images/BackgroundLabrary.png" alt="gambar background" className='w-full h-full'/>
+      </div>
       <div className='flex pt-8 pb-6'>
         <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
         </div>
@@ -158,16 +122,14 @@ const filteredBooks =
           </button> 
         </div>
       </div>
-      <div className="grid justify-center px-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-4">
+      <div className="book-container ml-[160px] border-0 flex flex-wrap flex-row">
       {filteredBooks.map((book, index) => (
-        <div key={index} className='rounded-lg bg-white shadow p-4 hover:bg-yel-bro cursor-pointer'>
-          <img src={book.coverbuku} className='w-auto h-48 object-cover rounded-md' alt={`${book.judul} Image`}/>
-          <div className="my-4" style={{width: '200px'}}>
-          <h2 className="text-xl font-semibold mt-2 overflow-hidden line-clamp-1">{book.judul}</h2>
-        <p className="text-gray-500">{book.penulis}</p>
-        <p className='text-gray-500 text-[12px] overflow-hidden line-clamp-2'>{book.deskripsi}</p>
+        <div key={index} className='w-[220px] h-[400px] rounded-lg border-2 border-slate-200 shadow-md mr-4 mb-4'>
+          <img src={book.coverbuku} className='m-3 w-[160px] h-[200px]' alt={`${book.judul} Image`}/>
+          <div className="mx-3 mb-1 font-bold overflow-hidden overflow-ellipsis" style={{ fontSize:'22px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 1 }}>{book.judul}</div>
+          <div className='mx-3 mb-1' style={{fontSize:'16px'}}>{book.penulis}</div>
+          <div className="mx-3 mb-3 text-[#9E9FA1] justify-align overflow-hidden overflow-ellipsis" style={{ fontSize:'14px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>{book.deskripsi}</div>
           <div className={book.status_ketersediaan === 'Tersedia' ? 'mx-3 my-4 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center' : 'mx-3 my-4 h-[30px] bg-[#F88C91] text-[#DA121B] flex rounded-2xl items-center justify-center'} style={{ fontSize: '14px' }}>{book.status_ketersediaan === 'Tersedia' ? 'Tersedia' : 'Tidak tersedia'}</div>
-          </div>
         </div>
       ))}
       </div>
