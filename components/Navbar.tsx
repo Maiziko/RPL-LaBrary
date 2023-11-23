@@ -6,24 +6,26 @@ const Navbar = () => {
   const [avatarUrl, setAvatarUrl] = useState(null);
 
   useEffect(() => {
-    // ID profil yang ingin diambil
-    const profileId = '69effe1b-2e4f-44bd-846b-b237c824b903';
+    // Ambil ID pengguna dari penyimpanan lokal (localStorage)
+    const userId = localStorage.getItem('userId');
 
-    // Ambil data profil dari Supabase berdasarkan ID
-    const fetchProfile = async () => {
-      const { data, error } = await supabase
-        .from('profiles') // Ganti dengan nama tabel yang sesuai
-        .select('avatar_url') // Ganti dengan nama kolom yang sesuai
-        .eq('id', profileId) // Filter berdasarkan ID tertentu
-        .single();
+    if (userId) {
+      // Ambil data profil dari Supabase berdasarkan ID pengguna
+      const fetchProfile = async () => {
+        const { data, error } = await supabase
+          .from('profiles') // Ganti dengan nama tabel yang sesuai
+          .select('avatar_url') // Ganti dengan nama kolom yang sesuai
+          .eq('id', userId) // Filter berdasarkan ID pengguna
+          .single();
 
-      if (data) {
-        setAvatarUrl(data.avatar_url);
-      }
-    };
+        if (data) {
+          setAvatarUrl(data.avatar_url);
+        }
+      };
 
-    fetchProfile();
-  }, []); // Efek hanya dijalankan sekali setelah komponen dipasang
+      fetchProfile();
+    }
+  }, []); 
 
   return (
     <div className='h-[0px]'>

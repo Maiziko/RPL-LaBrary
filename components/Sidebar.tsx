@@ -33,19 +33,21 @@ const Sidebar = () => {
 
   const fetchProfileData = async () => {
     try {
-      // Ganti ID di bawah dengan ID yang sebenarnya
-      const profileId = '69effe1b-2e4f-44bd-846b-b237c824b903';
+      // Ambil ID pengguna dari penyimpanan lokal (localStorage)
+      const userId = localStorage.getItem('userId');
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('full_name, email, avatar_url')
-        .eq('id', profileId)
-        .single();
+      if (userId) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('full_name, email, avatar_url')
+          .eq('id', userId)
+          .single();
 
-      if (error) {
-        console.error('Error fetching profile data:', error.message);
-      } else {
-        setProfileData(data);
+        if (error) {
+          console.error('Error fetching profile data:', error.message);
+        } else {
+          setProfileData(data);
+        }
       }
     } catch (error) {
       console.error('Error fetching profile data:', (error as Error).message);
@@ -105,7 +107,11 @@ const Sidebar = () => {
       <div className="mt-[70px] text-center">
         {profileData && (
           <>
-            <img src={profileData.avatar_url} className='w-16 h-16 mx-auto rounded-full' alt="" />
+           <img
+            src={profileData.avatar_url || '/images/ProfilePictureSideMenu.svg'}
+            className='w-16 h-16 mx-auto rounded-full'
+            alt=""
+          />
             <h2 className="text-xl font-semibold mt-2">{profileData.full_name}</h2>
             <p className="text-sm mt-1">{profileData.email}</p>
           </>
