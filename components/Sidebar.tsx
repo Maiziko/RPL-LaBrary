@@ -121,72 +121,73 @@ const Sidebar = () => {
       {/* Menu Sidebar */}
       <ul className="mt-14">
         <li className="">
-          <Link href="/koleksibuku" className="flex px-10 py-3 w-[240px] text-white hover:bg-gray-green rounded-r-full hover:text-strong-orange text-14">
+          <Link href="/koleksibuku" className="flex px-10 py-3 w-[240px] text-white group hover:bg-[#C5D0D2] rounded-r-full hover:text-strong-orange text-14 transition-all duration-300">
             <div className="w-[24px] h-[24px] relative group">
-              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
-                <img src="/images/Homeon.svg" alt="" />
-              </div>
               <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
-                <img src="/images/Homeoff.svg" alt="" />
+                <img src="/images/Homeoff.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
+              </div>
+              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
+                <img src="/images/Homeon.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
               </div>
             </div>
-            <span className="pl-5 my-auto text-sm">Home</span>
+            <span className="pl-5 my-auto text-sm group-hover:text-[#C86F43]">Home</span>
           </Link>
         </li>
         <li className="">
-          <Link href="/listpeminjaman" className="flex px-10 py-3 w-[240px] text-white hover:bg-gray-green rounded-r-full hover:text-strong-orange text-14">
+          <Link href="/listpeminjaman" className="flex px-10 py-3 w-[240px] text-white group hover:bg-[#C5D0D2] rounded-r-full hover:text-strong-orange text-14 transition-all duration-300">
             <div className="w-[24px] h-[24px] relative group">
-              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
-                <img src="/images/ListPeminjamanOn.svg" alt="" />
-              </div>
               <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
-                <img src="/images/listPeminjamanOff.svg" alt="" />
+                <img src="/images/listPeminjamanOff.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
+              </div>
+              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
+                <img src="/images/ListPeminjamanOn.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
               </div>
             </div>
-            <span className="pl-5 my-auto text-sm">List Peminjaman</span>
+            <span className="pl-5 my-auto text-sm group-hover:text-[#C86F43]">List Peminjaman</span>
           </Link>
         </li>
         <li className="">
-          <Link href="/koleksibuku" className="flex px-10 py-3 w-[240px] text-white hover:bg-gray-green rounded-r-full hover:text-strong-orange text-14">
+          <Link href="/koleksibuku" className="flex px-10 py-3 w-[240px] text-white group hover:bg-[#C5D0D2] rounded-r-full hover:text-strong-orange text-14 transition-all duration-300">
             <div className="w-[24px] h-[24px] relative group">
-              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
-                <img src="/images/koleksiBukuOn.png" alt="" />
-              </div>
               <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
-                <img src="/images/koleksiBukuOffsvg.svg" alt="" />
+                <img src="/images/koleksiBukuOffsvg.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
+              </div>
+              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
+                <img src="/images/koleksiBukuOn.png" alt="" className="group-hover:filter group-hover:grayscale-0" />
               </div>
             </div>
-            <span className="pl-5 my-auto text-sm">Koleksi Buku</span>
+            <span className="pl-5 my-auto text-sm group-hover:text-[#C86F43]">Koleksi Buku</span>
           </Link>
         </li>
         <li className="">
-          <Link href="/riwayatbuku" className="flex px-10 py-3 w-[240px] text-white hover:bg-gray-green rounded-r-full hover:text-strong-orange text-14">
+          <Link href="/riwayatbuku" className="flex px-10 py-3 w-[240px] text-white group hover:bg-[#C5D0D2] rounded-r-full hover:text-strong-orange text-14 transition-all duration-300">
             <div className="w-[24px] h-[24px] relative group">
-              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
-                <img src="/images/riwayatOn.svg" alt="" />
-              </div>
               <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
-                <img src="/images/riwayatOff.svg" alt="" />
+                <img src="/images/riwayatOff.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
+              </div>
+              <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
+                <img src="/images/riwayatOn.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
               </div>
             </div>
-            <span className="pl-5 my-auto text-sm">Riwayat</span>
+            <span className="pl-5 my-auto text-sm group-hover:text-[#C86F43]">Riwayat</span>
           </Link>
         </li>
       </ul>
+
       <div className='mt-[200px]'>
         <button
-            className="flex px-10 py-3 w-[240px] text-white hover:bg-gray-green rounded-r-full hover:text-strong-orange text-14"
-            onClick={handleLogout}
-          >
-        <div className="w-[24px] h-[24px] relative group">
-          <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
-            <img src="/icon/LogOutHoverIcon.svg" alt="" />
+          className="flex px-10 py-3 w-[240px] text-white group hover:bg-[#C5D0D2] rounded-r-full hover:text-strong-orange text-14 transition-all duration-300"
+          onClick={handleLogout}
+        >
+          <div className="w-[24px] h-[24px] relative group">
+            <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
+              <img src="/icon/LogOutICON.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
+            </div>
+            <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-100">
+              <img src="/icon/LogOutHoverIcon.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />
+            </div>
           </div>
-          <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
-            <img src="/icon/LogOutICON.svg" alt="" />
-          </div>
-        </div>
-        <span className="pl-5 my-auto text-sm">Log Out</span>
+          <span className="pl-5 my-auto text-sm group-hover:text-[#C86F43]">Log Out</span>
         </button>
       </div>
     </div>
