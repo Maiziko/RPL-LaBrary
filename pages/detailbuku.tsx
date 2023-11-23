@@ -14,19 +14,35 @@ interface BukuDetail {
   kategori: string;
   tahunterbit: string;
 }
-const daftarBuku: BukuDetail[] = [
-  {
-    judul: 'The Lord of the Rings',
-    penulis: 'JRR Tolkien',
-    penerbit: 'Britania Raya',
-    kategori: "Fantasi",
-    tahunterbit: '1954',
-    image: '/images/lordoftherings.png',
-    availability: 'Tersedia',
-    deskripsi:'Menyajikan epik yang menggambarkan Perang Besar Cincin, perjuangan antara yang baik dan yang jahat di Dunia Tengah, mengikuti pengembaraan Frodo si hobbit dan teman-temannya dalam upaya menghancurkan Cincin Kekuasaan.'
-  }
-]
-const DetailBuku: React.FC<{ buku: BukuDetail }> = ({ buku }) => {
+interface Props {
+  buku: BukuDetail;
+}
+
+const DetailBuku: React.FC<Props>= ({ buku }) => {
+  useEffect(() => {
+    // Fungsi untuk mengambil data dari Supabase
+    const fetchData = async () => {
+      try {
+        // Misalnya, untuk mengambil data buku dari tabel 'buku' di Supabase
+        const { data, error } = await supabase
+          .from('buku')
+          .select()
+          .eq('judul', buku.judul); // Sesuaikan dengan kriteria pencarian yang diperlukan
+
+        if (error) {
+          throw error;
+        }
+
+        // Lakukan sesuatu dengan data yang diperoleh dari Supabase
+        console.log('Data buku dari Supabase:', data);
+      } catch (error) {
+        console.error('Gagal mengambil data:', error.message);
+      }
+    };
+
+    // Panggil fungsi fetchData saat komponen dimount
+    fetchData();
+  }, [buku.judul]);
   return (
     <div className='font-poppins'>
       <div>
