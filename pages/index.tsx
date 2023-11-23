@@ -24,13 +24,14 @@ const Login: React.FC = () => {
       email: email,
       password: password,
     });
-
+  
     if (error) {
       console.error('Gagal login:', error.message);
-      console.log('user : ', data);
     } else {
       console.log('Berhasil login:', data);
-      router.push('/koleksibuku')
+      // Simpan ID pengguna ke penyimpanan lokal (localStorage)
+      localStorage.setItem('userId', data.user.id);
+      router.push('/koleksibuku');
     }
   };
   
