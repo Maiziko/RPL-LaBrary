@@ -81,8 +81,8 @@ const filteredBooks =
 
   const handleBookClick = (book: Buku) => {
     router.push({
-      pathname: '/detail-buku',
-      query: {judul: book.id_buku},
+      pathname: '/detailbuku',
+      query: {id_buku: book.id_buku},
     });
   };
   

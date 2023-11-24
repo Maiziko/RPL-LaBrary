@@ -31,17 +31,17 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
           console.error('ID buku tidak ditemukan atau Supabase tidak terinisialisasi');
           return;
         }
-
+    
         const { data, error } = await supabase
           .from('buku')
           .select('*')
           .eq('id_buku', id_buku.toString())
           .single();
-
+    
         if (error) {
           throw new Error(error.message);
         }
-
+    
         setBukuDetail(data || null);
         setLoading(false);
       } catch (error) {
@@ -113,20 +113,24 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   <div className='w-[560px] h-[320px] rounded-lg border-2 border-slate-200 shadow-md mr-2 mb-3 p-5 flex'>
     {/* Isi Detail Buku */}
     <div className="flex flex-wrap">
-      <img src='/images/hungergames.png' className='w-[180px] h-[250px]' alt='Book cover' />
+      <img src={bukuDetail?.cover_buku} className='w-[180px] h-[250px]' alt='Book cover' />
       <div className="ml-[50px] text-[#858585]" style={{ fontSize: '18px' }}>
-        <div className="text-[#858585]" style={{ fontSize: '18px' }}>Judul Buku</div>
-        <div className="text-[#000000] font-bold" style={{ fontSize: '24px' }}>{bukuDetail?.judul}</div>
-        <div className="text-[#858585]" style={{ fontSize: '18px' }}>Penulis</div>
-<div className="text-[#000000] font-bold" style={{ fontSize: '18px' }}>{bukuDetail?.penulis}</div>
-<div className='flex' style={{ fontSize: '18px' }}>Penerbit
-  <div className='ml-[58px] mb-2 text-[#000000]'>{bukuDetail?.penerbit}</div>
-</div>
-<div className='flex' style={{ fontSize: '18px' }}>Kategori
-  <div className='ml-[57px] mb-2 text-[#000000]'>{bukuDetail?.kategori}</div>
-</div>
-<div className='flex' style={{ fontSize: '18px' }}>Tahun Terbit
-  <div className='ml-[21px] mb-2 text-[#000000]'>{bukuDetail?.tahun_terbit}</div>
+      <div className="text-[#858585]" style={{ fontSize: '18px' }}>
+  <div className="text-[#858585]" style={{ fontSize: '18px' }}>Judul Buku</div>
+  <div className="text-[#000000] font-bold" style={{ fontSize: '24px' }}>{bukuDetail?.judul}</div>
+  <div className="text-[#858585]" style={{ fontSize: '18px' }}>Penulis</div>
+  <div className="text-[#000000] font-bold" style={{ fontSize: '18px' }}>{bukuDetail?.penulis}</div>
+  {/* Sisipkan properti lainnya seperti penerbit, kategori, tahun terbit, dsb. */}
+  {/* Contoh: */}
+  <div className='flex' style={{ fontSize: '18px' }}>Penerbit
+    <div className='ml-[58px] mb-2 text-[#000000]'>{bukuDetail?.penerbit}</div>
+  </div>
+  <div className='flex' style={{ fontSize: '18px' }}>Kategori
+    <div className='ml-[57px] mb-2 text-[#000000]'>{bukuDetail?.kategori}</div>
+  </div>
+  <div className='flex' style={{ fontSize: '18px' }}>Tahun Terbit
+    <div className='ml-[21px] mb-2 text-[#000000]'>{bukuDetail?.tahun_terbit}</div>
+  </div>
 </div>
 <div className='mx-3 my-2 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center'>{bukuDetail?.status_ketersediaan}</div>
       </div>
