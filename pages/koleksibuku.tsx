@@ -3,18 +3,22 @@ import { supabase } from '../supabase';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Navbar from '@src/components/Navbar';
+import Sidebar from '@src/components/Sidebar';
 
 interface Buku {
+  id_buku: number;
   judul: string;
   penulis: string;
   deskripsi: string;
-  availability: string;
-  image: string;
+  status_ketersediaan: string;
+  cover_buku: string;
   kategori: string;
 }
 type KategoriBuku = Record<string, Buku[]>;
 
 const koleksiBuku: React.FC = () => {
+  const router = useRouter();
   const [selectedButton, setSelectedButton] = useState('Semua');
   const [screenWidth, setScreenWidth] = useState(0);
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
@@ -58,7 +62,7 @@ const filteredBooks =
     : daftarBuku.filter(book => {
       console.log('Selected Button:', selectedButton);
       console.log('Book Kategori:', book.kategori);
-      return book.kategori === selectedButton;
+      return book.kategori.toLowerCase() === selectedButton.toLowerCase();
     });
     
     // button
@@ -76,9 +80,18 @@ const filteredBooks =
       }
       return {};
     };
+
+  const handleBookClick = (book: Buku) => {
+    router.push({
+      pathname: '/detailbuku',
+      query: {id_buku: book.id_buku},
+    });
+  };
   
   return (
     <div className='font-poppins'>
+      <Navbar/>
+      <Sidebar/>
       <div>
         <img src="/images/BackgroundLabrary.png" alt="gambar background" className='w-full h-full'/>
       </div>
@@ -122,16 +135,18 @@ const filteredBooks =
           </button> 
         </div>
       </div>
-      <div className="book-container ml-[140px] border-0 flex flex-wrap flex-row">
+      <div className="book-container mx-[160px] pl-[14px] items-center border-0 flex flex-wrap flex-row">
       {filteredBooks.map((book, index) => (
-        <div key={index} className='w-[188px] h-[400px] rounded-lg border-2 border-slate-200 shadow-md mr-4 mb-4'>
-          <img src="https://osfpydbfxqrkgaxwyywe.supabase.co/storage/v1/object/sign/coverbuku/A%20Game%20Of%20Ghost.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjb3ZlcmJ1a3UvQSBHYW1lIE9mIEdob3N0LnN2ZyIsImlhdCI6MTcwMDU4NDczNSwiZXhwIjoxNzAxMTg5NTM1fQ.WwIyZ_j_CF4Hrc8VHZBkN1uzz0wycVrv0HX_H12GXRI&t=2023-11-21T16%3A38%3A53.009Z" className='m-3 w-[160px] h-[200px]' alt={`${book.judul} Image`}/>
+        <div key={index} onClick={() => handleBookClick(book)} className='w-[220px] h-[400px] rounded-lg border-2 border-slate-200 shadow-md mr-4 mb-4'>
+          <img src={book.cover_buku} className='m-3 w-[192px] h-[200px]' alt={`${book.judul} Image`}/>
           <div className="mx-3 mb-1 font-bold overflow-hidden overflow-ellipsis" style={{ fontSize:'22px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 1 }}>{book.judul}</div>
           <div className='mx-3 mb-1' style={{fontSize:'16px'}}>{book.penulis}</div>
-          <div className="mx-3 mb-3 text-[#9E9FA1] justify-align overflow-hidden overflow-ellipsis" style={{ fontSize:'14px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>{book.deskripsi}</div>
-          <div className={book.availability === 'Tersedia' ? 'mx-3 my-4 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center' : 'mx-3 my-4 h-[30px] bg-[#F88C91] text-[#DA121B] flex rounded-2xl items-center justify-center'} style={{ fontSize: '14px' }}>{book.availability === 'Tersedia' ? 'Tersedia' : 'Tidak tersedia'}</div>
-        </div>
-      ))}
+          <div className="mx-3 mb-3 h-[42px] text-[#9E9FA1] justify-align overflow-hidden overflow-ellipsis" style={{ fontSize:'14px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>{book.deskripsi}</div>
+          <div className={book.status_ketersediaan === 'Tersedia' ? 'mx-3 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center' : 'mx-3 h-[30px] bg-[#F88C91] text-[#DA121B] flex rounded-2xl items-center justify-center'} style={{ fontSize: '14px', marginTop: '1rem' }}>
+            {book.status_ketersediaan === 'Tersedia' ? 'Tersedia' : 'Tidak tersedia'}
+          </div>        
+          </div>
+        ))}
       </div>
     </div>
 
