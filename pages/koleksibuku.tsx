@@ -15,6 +15,7 @@ interface Buku {
 type KategoriBuku = Record<string, Buku[]>;
 
 const koleksiBuku: React.FC = () => {
+  const router = useRouter();
   const [selectedButton, setSelectedButton] = useState('Semua');
   const [screenWidth, setScreenWidth] = useState(0);
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
@@ -76,6 +77,13 @@ const filteredBooks =
       }
       return {};
     };
+
+  const handleBookClick = (book: Buku) => {
+    router.push({
+      pathname: '/detail-buku',
+      query: {judul: book.judul},
+    });
+  };
   
   return (
     <div className='font-poppins'>
@@ -124,7 +132,7 @@ const filteredBooks =
       </div>
       <div className="book-container ml-[160px] border-0 flex flex-wrap flex-row">
       {filteredBooks.map((book, index) => (
-        <div key={index} className='w-[220px] h-[400px] rounded-lg border-2 border-slate-200 shadow-md mr-4 mb-4'>
+        <div key={index} onClick={() => handleBookClick(book)} className='w-[220px] h-[400px] rounded-lg border-2 border-slate-200 shadow-md mr-4 mb-4'>
           <img src={book.coverbuku} className='m-3 w-[160px] h-[200px]' alt={`${book.judul} Image`}/>
           <div className="mx-3 mb-1 font-bold overflow-hidden overflow-ellipsis" style={{ fontSize:'22px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 1 }}>{book.judul}</div>
           <div className='mx-3 mb-1' style={{fontSize:'16px'}}>{book.penulis}</div>
