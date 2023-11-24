@@ -27,15 +27,50 @@ const daftarBuku: BukuDetail[] = [
   }
 ]
 const DetailBuku: React.FC<{ buku: BukuDetail }> = ({ buku }) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showModalPinjam, setShowModalPinjam] = useState(false);
+  const [showModalSuccess, setShowModalSuccess] = useState(false);
 
+  const [peminjamanData, setPeminjamanData] = useState({
+    judul: '',
+    tanggalPeminjaman: '',
+    tanggalPengembalian: '',
+  });
+  
   const handlePinjamClick = () => {
-    setShowModal(true);
+    setPeminjamanData({
+      judul: 'The Lord of the Rings', //JUDUL BLM SESUAI
+      tanggalPeminjaman: new Date().toLocaleDateString(), // Tanggal peminjaman sesuai dengan waktu saat ini
+      tanggalPengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(), // Tanggal pengembalian set 7 hari dari sekarang
+    });
+
+    setShowModalPinjam(true);
+  };
+
+  const handleBatalPinjam = () => {
+    // Reset data peminjaman
+    setPeminjamanData({
+      judul: '',
+      tanggalPeminjaman: '',
+      tanggalPengembalian: '',
+    });
+
+    // Tutup modals
+    setShowModalPinjam(false);
+  };
+
+  const handleConfirmPinjam = () => {
+    // Lakukan logika untuk menyimpan peminjaman ke database atau tempat penyimpanan lainnya
+
+    // Setelah peminjaman berhasil, tampilkan modals peminjaman berhasil
+    setShowModalPinjam(false);
+    setShowModalSuccess(true);
   };
 
   const closeModal = () => {
-    setShowModal(false);
-  }
+    setShowModalSuccess(false);
+  };
+  
+
   return (
     <div className='font-poppins'>
       <div>
@@ -108,21 +143,47 @@ const DetailBuku: React.FC<{ buku: BukuDetail }> = ({ buku }) => {
 </div>
   <div className='my-[50px] ml-[162px] mr-[590px] flex'>
     <button className='p-2 text-center rounded-lg ml-[200px] bg-[#426e6d] text-[#fefbfb]'>+ List Peminjaman</button>
-    <button onClick={handlePinjamClick} className='px-10 py-3 text-center rounded-lg ml-[30px] bg-[#c86f43] text-[#fefbfb]'>Pinjam</button>
+    <button
+          onClick={handlePinjamClick} // Ubah fungsi yang akan menampilkan modal
+          className='px-10 py-3 text-center rounded-lg ml-[30px] bg-[#c86f43] text-[#fefbfb]'
+        >
+          Pinjam
+        </button>
   </div>
-  {showModal && (
+  {showModalPinjam && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-5 rounded-md">
+          <div className="bg-white py-8 px-10 rounded-md">
+            <h2 className="text-2xl font-bold mb-5 text-[#426E6D] text-center">Ringkasan Peminjaman</h2>
+            <div className="flex flex-col text-[#426E6D]">
+              <p className='mb-2 flex justify-between' style={{fontSize: '18px'}}>Judul Buku: {peminjamanData.judul}</p>
+              <p className='mb-2 flex justify-between' style={{fontSize: '18px'}}>Tanggal Peminjaman: {peminjamanData.tanggalPeminjaman}</p>
+              <p className='mb-2 flex justify-between' style={{fontSize: '18px'}}>Tanggal Pengembalian: {peminjamanData.tanggalPengembalian}</p>
+            </div>
+            <div className="mt-4 flex justify-between">
+              <button onClick={handleBatalPinjam} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
+                Batal
+              </button>
+              <button onClick={handleConfirmPinjam} className="bg-[#C86F43] text-white px-6 py-3 rounded-lg">
+                Pinjam
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Peminjaman Berhasil */}
+      {showModalSuccess && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-5 rounded-md text-[#426E6D]">
             <h2 className="text-xl font-bold mb-3">Peminjaman Berhasil!</h2>
-            <button onClick={closeModal} className="bg-blue-500 text-white px-3 py-1 rounded-md">
+            <p>Anda telah berhasil meminjam buku dengan judul {peminjamanData.judul}</p>
+            <button onClick={closeModal} className="bg-[#7a7a7a] text-white px-3 py-1 rounded-md mt-4">
               Tutup
             </button>
           </div>
         </div>
       )}
-</div>
-
-
+    </div>
   );
 };
 
