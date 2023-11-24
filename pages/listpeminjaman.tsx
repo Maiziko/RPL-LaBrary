@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { format, addDays } from 'date-fns';
 import { supabase } from '../supabase';
-import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
-import ModalListPeminjaman from '../components/ModalListPeminjaman';
+import Navbar from '../src/components/Navbar';
+import Sidebar from '../src/components/Sidebar';
+import ModalListPeminjaman from '../src/components/ModalListPeminjaman';
 // import TambahPeminjaman from '../pages/detailbuku'
 
 // ./pages/index.tsx or ./pages/_app.tsx

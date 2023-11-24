@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabase';
+import { supabase } from '../../supabase';
 
 const Navbar = () => {
   const [avatarUrl, setAvatarUrl] = useState(null);
