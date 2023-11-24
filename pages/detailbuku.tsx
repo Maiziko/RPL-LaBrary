@@ -101,7 +101,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
         
       <div className='flex pt-8 pb-4'>
         <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
-          <Link href="/">
+          <Link href="/koleksibuku">
             <img src="/icon/BackButton.png" alt="" />
           </Link>
         </div>
