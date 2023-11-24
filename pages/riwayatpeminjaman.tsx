@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabase';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
+<<<<<<< HEAD
 
 interface Buku{
   id_peminjaman: number;
@@ -62,18 +59,53 @@ const riwayatPeminjaman: React.FC = () => {
       fetchPeminjamanData();
     },[]);
 
+=======
+import Sidebar from '../src/components/Sidebar';
+import Navbar from '../src/components/Navbar';
+// import CardRiwayat from '../components/CardRiwayat';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import CardRiwayat from '../src/components/CardRiwayat';
+// ./pages/index.tsx or ./pages/_app.tsx
+
+const Arrowleft = () => (
+  <Image
+    src="/images/arrowleft.svg"
+    alt="My Image"
+    width={21}
+    height={16}
+  />
+);
+
+const Page = () => {
+  // Mark the parent component as a client component
+  // const [isLogin, setIsLogin] = useState(false);
+  // const {push} = useRouter();
+
+  // useEffect(() => {
+  //   if (!isLogin){
+  //     push("/");
+  //   }
+  // },[]);
+>>>>>>> 686695b176f2dcb4a4c6d99f835cccd955300c1b
   return (
-    <div className='font-poppins'>
-      <div>
-        <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>
-      </div>
-        
-      <div className='flex pt-8 pb-4'>
-        <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
-          <Link href="/">
-            <img src="/icon/BackButton.png" alt="" />
-          </Link>
+    <main className="bg-soft-green">
+      <Head>
+        <title>Riwayat Peminjaman</title>
+      </Head>
+          <Navbar/>
+          {/* <!-- Bagian Akhir Component Navigasi Bar --> */}
+          <Sidebar/>
+          <div className="flex py-10" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 500px))', paddingTop: '24px', paddingLeft: '106px', paddingBottom: '24px' }}>
+            <button className="bg-gray-green hover:bg-white py-4 px-3 rounded-full cursor-pointer top-5 left-4">
+                <Arrowleft/>
+            </button>
+            <div className="px-[30px] font-poppins">
+                <span className="text-4xl font-semibold text-primary">Riwayat Peminjaman</span>
+            </div>
         </div>
+<<<<<<< HEAD
         <div className='text-[#426E6D] text-3xl font-bold flex items-center'>Riwayat Peminjaman</div>
       </div>
 
@@ -101,7 +133,11 @@ const riwayatPeminjaman: React.FC = () => {
 </div>
 
 </div>     
+=======
+          <CardRiwayat/>
+    </main>
+>>>>>>> 686695b176f2dcb4a4c6d99f835cccd955300c1b
   );
 };
 
-export default riwayatPeminjaman;
+export default Page;
