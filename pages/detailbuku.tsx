@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 interface BukuDetail {
+  id_buku: number;
   judul: string;
   penulis: string;
   penerbit: string;
@@ -20,35 +21,36 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   const [showModalPinjam, setShowModalPinjam] = useState(false);
   const [showModalSuccess, setShowModalSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const { id_buku } = router.query;
 
   useEffect(() => {
     const fetchBukuDetail = async () => {
       try {
-        if (!supabase) {
-          // Pastikan supabase sudah terinisialisasi sebelum digunakan
-          console.error('Supabase not initialized');
+        if (!id_buku || !supabase) {
+          console.error('ID buku tidak ditemukan atau Supabase tidak terinisialisasi');
           return;
         }
-  
+
         const { data, error } = await supabase
           .from('buku')
           .select('*')
-          .eq('judul', bukuJudul)
+          .eq('id_buku', id_buku.toString())
           .single();
-  
+
         if (error) {
           throw new Error(error.message);
         }
-  
+
         setBukuDetail(data || null);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching buku detail:', error instanceof Error ? error.message : error);
       }
     };
-  
+
     fetchBukuDetail();
-  }, [bukuJudul]);
+  }, [id_buku, supabase]);
 
   const [peminjamanData, setPeminjamanData] = useState({
     judul: '',
