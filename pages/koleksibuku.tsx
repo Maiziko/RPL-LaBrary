@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 interface Buku {
+  id_buku: number;
   judul: string;
   penulis: string;
   deskripsi: string;
@@ -80,8 +81,8 @@ const filteredBooks =
 
   const handleBookClick = (book: Buku) => {
     router.push({
-      pathname: '/detail-buku',
-      query: {judul: book.judul},
+      pathname: '/detailbuku',
+      query: {judul: book.id_buku},
     });
   };
   
