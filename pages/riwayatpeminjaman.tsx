@@ -81,10 +81,10 @@ const riwayatPeminjaman: React.FC = () => {
   <div className='flex items-start font-poppins'>
     <div className='m-3 p-3 w-[180px] h-[230px]' style={{backgroundImage: 'url(${peminjaman.buku.cover_buku})', backgroundSize:'cover'}}></div>
     <div className="flex flex-col">
-      <p className="pt-[20px] text-xl font-bold">{peminjaman.buku.judul}</p>
-      <p className="pt-[10px] text-base">{peminjaman.buku.penulis}</p>
+      <p className="pt-[20px] text-xl font-bold">test</p>
+      <p className="pt-[10px] text-base">jk rowling</p>
       <p className='pt-[10px] text-base text-[#9E9FA1] overflow-hidden'>
-        <span className="block w-[500px] overflow-hidden overflow-ellipsis" style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}> {peminjaman.buku.deskripsi}
+        <span className="block w-[500px] overflow-hidden overflow-ellipsis" style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}> 123545
         </span>
       </p>
       <div className='flex items-center pt-2 text-[#9E9FA1] mt-8'>
