@@ -1,11 +1,11 @@
 import Image from 'next/image';
-import Sidebar from '../components/Sidebar';
-import Navbar from '../components/Navbar';
+import Sidebar from '../src/components/Sidebar';
+import Navbar from '../src/components/Navbar';
 // import CardRiwayat from '../components/CardRiwayat';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import CardRiwayat from '../components/CardRiwayat';
+import CardRiwayat from '../src/components/CardRiwayat';
 // ./pages/index.tsx or ./pages/_app.tsx
 
 const Arrowleft = () => (
