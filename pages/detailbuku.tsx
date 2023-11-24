@@ -118,8 +118,9 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
       <div className="text-[#858585]" style={{ fontSize: '18px' }}>
   <div className="text-[#858585]" style={{ fontSize: '18px' }}>Judul Buku</div>
   <div className="text-[#000000] font-bold" style={{ fontSize: '24px' }}>{bukuDetail?.judul}</div>
-  <div className="text-[#858585]" style={{ fontSize: '18px' }}>Penulis</div>
-  <div className="text-[#000000] font-bold" style={{ fontSize: '18px' }}>{bukuDetail?.penulis}</div>
+  <div className='flex' style={{ fontSize: '18px' }}>Penulis
+    <div className='ml-[69px] mb-2 text-[#000000]'>{bukuDetail?.penulis}</div>
+  </div>
   {/* Sisipkan properti lainnya seperti penerbit, kategori, tahun terbit, dsb. */}
   {/* Contoh: */}
   <div className='flex' style={{ fontSize: '18px' }}>Penerbit
