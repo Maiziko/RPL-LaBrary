@@ -3,6 +3,8 @@ import { supabase } from '../supabase';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Navbar from '@src/components/Navbar';
+import Sidebar from '@src/components/Sidebar';
 
 interface Buku {
   id_buku: number;
@@ -88,6 +90,8 @@ const filteredBooks =
   
   return (
     <div className='font-poppins'>
+      <Navbar/>
+      <Sidebar/>
       <div>
         <img src="/images/BackgroundLabrary.png" alt="gambar background" className='w-full h-full'/>
       </div>

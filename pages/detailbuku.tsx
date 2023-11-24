@@ -3,6 +3,8 @@ import { supabase } from '../supabase';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Navbar from '@src/components/Navbar';
+import Sidebar from '@src/components/Sidebar';
 
 interface BukuDetail {
   id_buku: number;
@@ -95,6 +97,8 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
 
   return (
     <div className='font-poppins'>
+      <Navbar/>
+      <Sidebar/>
       <div>
         <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>
       </div>

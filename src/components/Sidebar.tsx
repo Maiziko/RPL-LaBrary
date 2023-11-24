@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { supabase } from '../../supabase';
-import React from 'react';
 
 interface ProfileData {
   full_name: string;
