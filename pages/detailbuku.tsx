@@ -93,6 +93,45 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   const closeModal = () => {
     setShowModalSuccess(false);
   };
+
+  const [showModalListPeminjaman, setShowModalListPeminjaman] = useState(false);
+  
+  const handleListPeminjamanClick = async () => {
+    try {
+      // Pastikan ada data buku dan Supabase terinisialisasi
+      if (!id_buku || !supabase) {
+        console.error('ID buku tidak ditemukan atau Supabase tidak terinisialisasi');
+        return;
+      }
+  
+      // Tambahkan data ke tabel list_peminjaman
+      const { data: peminjamanData, error: peminjamanError } = await supabase
+        .from('list_peminjaman')
+        .insert([
+          {
+            id_buku: id_buku.toString(),
+            // Tambahan data lainnya sesuai kebutuhan
+          },
+        ]);
+  
+      if (peminjamanError) {
+        throw new Error(peminjamanError.message);
+      }
+  
+      // Tampilkan modal sukses
+      setShowModalListPeminjaman(true);
+    } catch (error) {
+      console.error('Error handling list peminjaman:', error instanceof Error ? error.message : error);
+    }
+  };
+
+  const handleCloseListPeminjamanModal = () => {
+    setShowModalListPeminjaman(false);
+  };
+
+  const handleLihatListPeminjamanClick = () => {
+    router.push('/listpeminjaman');
+  };
   
 
   return (
@@ -109,46 +148,45 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
             <img src="/icon/BackButton.png" alt="" />
           </Link>
         </div>
-          <div className='text-[#426E6D] text-3xl font-bold flex items-center'>Detail Buku</div>
-        </div>
-        <div className="mx-[130px] width-screen border-0 flex flex-wrap flex-row">
-
-  {/* Bagian Detail Buku */}
-  <div className='w-[560px] h-[320px] rounded-lg border-2 border-slate-200 shadow-md mr-2 mb-3 p-5 flex'>
-    {/* Isi Detail Buku */}
-    <div className="flex flex-wrap">
-      <img src={bukuDetail?.cover_buku} className='w-[180px] h-[250px]' alt='Book cover' />
-      <div className="ml-[50px] text-[#858585]" style={{ fontSize: '18px' }}>
-      <div className="text-[#858585]" style={{ fontSize: '18px' }}>
-  <div className="text-[#858585]" style={{ fontSize: '18px' }}>Judul Buku</div>
-  <div className="text-[#000000] font-bold" style={{ fontSize: '24px' }}>{bukuDetail?.judul}</div>
-  <div className='flex' style={{ fontSize: '18px' }}>Penulis
-    <div className='ml-[69px] mb-2 text-[#000000]'>{bukuDetail?.penulis}</div>
-  </div>
-  {/* Sisipkan properti lainnya seperti penerbit, kategori, tahun terbit, dsb. */}
-  {/* Contoh: */}
-  <div className='flex' style={{ fontSize: '18px' }}>Penerbit
-    <div className='ml-[58px] mb-2 text-[#000000]'>{bukuDetail?.penerbit}</div>
-  </div>
-  <div className='flex' style={{ fontSize: '18px' }}>Kategori
-    <div className='ml-[57px] mb-2 text-[#000000]'>{bukuDetail?.kategori}</div>
-  </div>
-  <div className='flex' style={{ fontSize: '18px' }}>Tahun Terbit
-    <div className='ml-[21px] mb-2 text-[#000000]'>{bukuDetail?.tahun_terbit}</div>
-  </div>
-</div>
-<div className='mx-3 my-2 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center'>{bukuDetail?.status_ketersediaan}</div>
+        <div className='text-[#426E6D] text-3xl font-bold flex items-center'>Detail Buku</div>
       </div>
-    </div>
-  </div>
-  {/* Kotak sinopsis */}
-  <div className='flex-1 px-5 rounded-lg'>
-    <div className='text-[#426E6D] font-bold' style={{ fontSize: '22px' }}>Sinopsis</div>
-    <div className='bg-[#C6E7ED] bg-opacity-50 p-3 rounded-xl mt-3 text-justify'>
-          {bukuDetail?.deskripsi}
+      <div className="mx-[130px] width-screen border-0 flex flex-wrap flex-row">
+        {/* Bagian Detail Buku */}
+        <div className='w-[560px] h-[320px] rounded-lg border-2 border-slate-200 shadow-md mr-2 mb-3 p-5 flex'>
+          {/* Isi Detail Buku */}
+          <div className="flex flex-wrap">
+            <img src={bukuDetail?.cover_buku} className='w-[180px] h-[250px]' alt='Book cover' />
+            <div className="ml-[50px] text-[#858585]" style={{ fontSize: '18px' }}>
+              <div className="text-[#858585]" style={{ fontSize: '18px' }}>
+                <div className="text-[#858585]" style={{ fontSize: '18px' }}>Judul Buku</div>
+                <div className="text-[#000000] font-bold" style={{ fontSize: '24px' }}>{bukuDetail?.judul}</div>
+                <div className='flex' style={{ fontSize: '18px' }}>Penulis
+                  <div className='ml-[69px] mb-2 text-[#000000]'>{bukuDetail?.penulis}</div>
+                </div>
+                {/* Sisipkan properti lainnya seperti penerbit, kategori, tahun terbit, dsb. */}
+                {/* Contoh: */}
+                <div className='flex' style={{ fontSize: '18px' }}>Penerbit
+                  <div className='ml-[58px] mb-2 text-[#000000]'>{bukuDetail?.penerbit}</div>
+                </div>
+                <div className='flex' style={{ fontSize: '18px' }}>Kategori
+                  <div className='ml-[57px] mb-2 text-[#000000]'>{bukuDetail?.kategori}</div>
+                </div>
+                <div className='flex' style={{ fontSize: '18px' }}>Tahun Terbit
+                  <div className='ml-[21px] mb-2 text-[#000000]'>{bukuDetail?.tahun_terbit}</div>
+                </div>
+              </div>
+              <div className='mx-3 my-2 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center'>{bukuDetail?.status_ketersediaan}</div>
+            </div>
+          </div>
         </div>
-    <div className='mt-4 text-[#426E6D] font-bold' style={{ fontSize: '22px' }}>Ulasan terkait</div>
-    <div>
+        {/* Kotak sinopsis */}
+        <div className='flex-1 px-5 rounded-lg'>
+          <div className='text-[#426E6D] font-bold' style={{ fontSize: '22px' }}>Sinopsis</div>
+          <div className='bg-[#C6E7ED] bg-opacity-50 p-3 rounded-xl mt-3 text-justify'>
+            {bukuDetail?.deskripsi}
+          </div>
+          <div className='mt-4 text-[#426E6D] font-bold' style={{ fontSize: '22px' }}>Ulasan terkait</div>
+          <div>
             {/* Rating Ulasan */}
             <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">
               <svg className="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
@@ -172,19 +210,24 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
               </div>
             </div>
           </div>
-    <div className='bg-[#C6E7ED] bg-opacity-50 p-3 rounded-xl mt-3 text-justify'>Buku ini sangat baik</div>
-  </div>
-</div>
-  <div className='my-[50px] ml-[162px] mr-[590px] flex'>
-    <button className='p-2 text-center rounded-lg ml-[200px] bg-[#426e6d] text-[#fefbfb]'>+ List Peminjaman</button>
-    <button
-          onClick={handlePinjamClick} // Ubah fungsi yang akan menampilkan modal
+          <div className='bg-[#C6E7ED] bg-opacity-50 p-3 rounded-xl mt-3 text-justify'>Buku ini sangat baik</div>
+        </div>
+      </div>
+      <div className='my-[50px] ml-[162px] mr-[590px] flex'>
+        <button
+          onClick={handleListPeminjamanClick}
+          className='p-2 text-center rounded-lg ml-[200px] bg-[#426e6d] text-[#fefbfb]'
+        >
+          + List Peminjaman
+        </button>
+        <button
+          onClick={handlePinjamClick}
           className='px-10 py-3 text-center rounded-lg ml-[30px] bg-[#c86f43] text-[#fefbfb]'
         >
           Pinjam
         </button>
-  </div>
-  {showModalPinjam && (
+      </div>
+      {showModalPinjam && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white py-8 px-10 rounded-md">
             <h2 className="text-2xl font-bold mb-5 text-[#426E6D] text-center">Ringkasan Peminjaman</h2>
@@ -214,6 +257,26 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
             <button onClick={closeModal} className="bg-[#7a7a7a] text-white px-3 py-1 rounded-md mt-4">
               Tutup
             </button>
+          </div>
+        </div>
+      )}
+
+      {showModalListPeminjaman && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white py-8 px-10 rounded-md">
+            {/* Content for List Peminjaman Modal */}
+            <h2 className="text-2xl font-bold mb-5 text-[#426E6D] text-center">Berhasil</h2>
+            {/* Add your list content here */}
+            <p>Buku berhasil ditambah ke list peminjaman</p>
+            {/* Close button */}
+            <div className="mt-4 flex justify-end text-white">
+              <button onClick={handleCloseListPeminjamanModal} className="bg-[#7A7A7A] px-7 py-3 rounded-lg mr-10">
+                Tutup
+              </button>
+              <button onClick={handleLihatListPeminjamanClick} className='bg-[#426E6D] rounded-lg px-4'>
+                Lihat List Peminjaman
+              </button>
+            </div>
           </div>
         </div>
       )}

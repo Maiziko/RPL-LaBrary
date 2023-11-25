@@ -135,16 +135,18 @@ const filteredBooks =
           </button> 
         </div>
       </div>
-      <div className="book-container ml-[160px] border-0 flex flex-wrap flex-row">
+      <div className="book-container mx-[160px] pl-[14px] items-center border-0 flex flex-wrap flex-row">
       {filteredBooks.map((book, index) => (
         <div key={index} onClick={() => handleBookClick(book)} className='w-[220px] h-[400px] rounded-lg border-2 border-slate-200 shadow-md mr-4 mb-4'>
-          <img src={book.cover_buku} className='m-3 w-[160px] h-[200px]' alt={`${book.judul} Image`}/>
+          <img src={book.cover_buku} className='m-3 w-[192px] h-[200px]' alt={`${book.judul} Image`}/>
           <div className="mx-3 mb-1 font-bold overflow-hidden overflow-ellipsis" style={{ fontSize:'22px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 1 }}>{book.judul}</div>
           <div className='mx-3 mb-1' style={{fontSize:'16px'}}>{book.penulis}</div>
-          <div className="mx-3 mb-3 text-[#9E9FA1] justify-align overflow-hidden overflow-ellipsis" style={{ fontSize:'14px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>{book.deskripsi}</div>
-          <div className={book.status_ketersediaan === 'Tersedia' ? 'mx-3 my-4 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center' : 'mx-3 my-4 h-[30px] bg-[#F88C91] text-[#DA121B] flex rounded-2xl items-center justify-center'} style={{ fontSize: '14px' }}>{book.status_ketersediaan === 'Tersedia' ? 'Tersedia' : 'Tidak tersedia'}</div>
-        </div>
-      ))}
+          <div className="mx-3 mb-3 h-[42px] text-[#9E9FA1] justify-align overflow-hidden overflow-ellipsis" style={{ fontSize:'14px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>{book.deskripsi}</div>
+          <div className={book.status_ketersediaan === 'Tersedia' ? 'mx-3 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center' : 'mx-3 h-[30px] bg-[#F88C91] text-[#DA121B] flex rounded-2xl items-center justify-center'} style={{ fontSize: '14px', marginTop: '1rem' }}>
+            {book.status_ketersediaan === 'Tersedia' ? 'Tersedia' : 'Tidak tersedia'}
+          </div>        
+          </div>
+        ))}
       </div>
     </div>
 
