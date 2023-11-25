@@ -323,7 +323,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
               <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal Menambah ke List Peminjaman</h2>
               <p>Buku sedang tidak tersedia</p>
             </div>
-            <div className="mt-8 flex justify-between">
+            <div className="items-center justify-center mt-8 flex">
               <button onClick={handleNotAvailableModalClose} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
                 Tutup
               </button>
@@ -360,7 +360,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
               <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal Meminjam</h2>
               <p>Buku sedang tidak tersedia</p>
             </div>
-            <div className="mt-8 flex justify-between">
+            <div className="items-center justify-center mt-8 flex">
               <button onClick={handleNotAvailablePinjamModalClose} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
                 Tutup
               </button>
