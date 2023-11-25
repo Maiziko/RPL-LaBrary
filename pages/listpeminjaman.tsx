@@ -100,6 +100,7 @@ const ListPeminjaman: React.FC = () => {
     });
   };
 
+  /* handle delete */
   const handleDelete = async (idBuku: string) => {
     try {
       // Hapus item dari tabel list_peminjaman berdasarkan id_buku
