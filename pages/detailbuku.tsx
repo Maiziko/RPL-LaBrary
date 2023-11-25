@@ -334,15 +334,15 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
 
       {showModalPinjam && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white py-8 px-10 rounded-md">
+          <div className="bg-white py-8 px-10 rounded-md w-[450px]">
             <h2 className="text-2xl font-bold mb-5 text-[#426E6D] text-center">Ringkasan Peminjaman</h2>
             <div className="flex flex-col text-[#426E6D]">
               <p className='mb-2 flex justify-between' style={{fontSize: '18px'}}>Judul Buku: {peminjamanData.judul}</p>
               <p className='mb-2 flex justify-between' style={{fontSize: '18px'}}>Tanggal Peminjaman: {peminjamanData.tanggalPeminjaman}</p>
               <p className='mb-2 flex justify-between' style={{fontSize: '18px'}}>Tanggal Pengembalian: {peminjamanData.tanggalPengembalian}</p>
             </div>
-            <div className="mt-4 flex justify-between">
-              <button onClick={handleBatalPinjam} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
+            <div className="pl-[150px] mt-4 flex">
+              <button onClick={handleBatalPinjam} className="bg-[#7A7A7A] text-white px-7 py-3 mr-4 rounded-lg">
                 Tutup
               </button>
               <button onClick={handleConfirmPinjam} className="bg-[#C86F43] text-white px-6 py-3 rounded-lg">
