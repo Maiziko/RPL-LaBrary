@@ -31,24 +31,25 @@ const ListPeminjaman: React.FC = () => {
   useEffect(() => {
     const fetchPeminjamanData = async () => {
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+        console.log(user?.id);
+        if (!user){
+          router.push('/');
+          console.log('helo');
+          console.log(user);
+          return;
+        }
+  
         const { data: peminjamanData, error: peminjamanError } = await supabase
           .from('list_peminjaman')
-          .select('id_buku');
+          .select('*')
+          .eq('id', user?.id);
   
         if (peminjamanError) {
           console.error('Error fetching peminjaman data:', peminjamanError.message);
           return;
         }
-
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
-        console.log(user?.id);
-        if (!user){
-          router.push('/')
-          console.log('helo')
-          console.log(user)
-          return
-        };
   
         const idBukus = peminjamanData.map((peminjaman) => peminjaman.id_buku);
   
@@ -82,7 +83,7 @@ const ListPeminjaman: React.FC = () => {
     };
   
     fetchPeminjamanData();
-  }, []);
+  }, [user?.id]);
    
   const handleCheckboxChange = (index: number) => {
     setCheckboxStatus((prevStatus) => {

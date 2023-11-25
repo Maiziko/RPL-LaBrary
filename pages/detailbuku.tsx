@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Navbar from '@src/components/Navbar';
 import Sidebar from '@src/components/Sidebar';
+import { User } from '@supabase/supabase-js';
 
 interface BukuDetail {
   id_buku: number;
@@ -134,11 +135,13 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   
       // Periksa status ketersediaan buku
       if (bookData && bookData.status_ketersediaan === 'Tersedia') {
+        const { data: { user } } = await supabase.auth.getUser();
         // Tambahkan data ke tabel list_peminjaman
         const { data: existingData, error: existingError } = await supabase
           .from('list_peminjaman')
           .select('*')
           .eq('id_buku', id_buku.toString())
+          .eq('id', user?.id) // Menambahkan kondisi ID pengguna
           .single();
   
         if (existingData) {
@@ -151,6 +154,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
             .insert([
               {
                 id_buku: id_buku.toString(),
+                id: user?.id, // Menambahkan ID pengguna
                 // Tambahan data lainnya sesuai kebutuhan
               },
             ]);
