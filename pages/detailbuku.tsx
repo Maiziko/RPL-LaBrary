@@ -27,6 +27,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   const router = useRouter();
   const { id_buku } = router.query;
   const [user, setUser] = useState<User | null>(null);
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     const fetchBukuDetail = async () => {
@@ -199,7 +200,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
 
   return (
     <div className='font-poppins'>
-      <Navbar/>
+      <Navbar setSearchValue={setSearchValue} />
       <Sidebar/>
       <div>
         <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>

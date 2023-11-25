@@ -16,7 +16,10 @@ interface Buku {
   cover_buku: string;
   kategori: string;
 }
+
 type KategoriBuku = Record<string, Buku[]>;
+
+const itemsPerPage = 12; // Set the number of items per page
 
 const koleksiBuku: React.FC = () => {
   const router = useRouter();
@@ -25,6 +28,7 @@ const koleksiBuku: React.FC = () => {
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [searchValue, setSearchValue] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +41,6 @@ const koleksiBuku: React.FC = () => {
         if (error) {
           throw new Error(error.message);
         }
-
         
         setDaftarBuku(data || []);
       } catch (error) {
@@ -75,10 +78,13 @@ const koleksiBuku: React.FC = () => {
             book.penulis.toLowerCase().includes(searchValue.toLowerCase()))
       );
     
+  const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
+      
     // button
   const handleButtonClick = (buttonName: string, event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setSelectedButton(buttonName);
+    setCurrentPage(1); // Reset to the first page when changing categories
   };
 
   const getButtonStyle = (buttonName: string) => {
@@ -97,6 +103,10 @@ const koleksiBuku: React.FC = () => {
       query: {id_buku: book.id_buku},
     });
   };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredBooks.slice(indexOfFirstItem, indexOfLastItem);
   
   return (
     <div className='font-poppins'>
@@ -146,7 +156,7 @@ const koleksiBuku: React.FC = () => {
         </div>
       </div>
       <div className="book-container mx-[160px] pl-[14px] items-center border-0 flex flex-wrap flex-row">
-      {filteredBooks.map((book, index) => (
+        {currentItems.map((book, index) => (
         <div key={index} onClick={() => handleBookClick(book)} className='w-[220px] h-[400px] rounded-lg border-2 border-slate-200 shadow-md mr-4 mb-4'>
           <img src={book.cover_buku} className='m-3 w-[192px] h-[200px]' alt={`${book.judul} Image`}/>
           <div className="mx-3 mb-1 font-bold overflow-hidden overflow-ellipsis" style={{ fontSize:'22px', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 1 }}>{book.judul}</div>
@@ -158,8 +168,41 @@ const koleksiBuku: React.FC = () => {
           </div>
         ))}
       </div>
+      <div className="pagination text-right mr-[100px] mb-[50px] mt-[20px] text-[20px]">
+        <button
+          className='pr-5 text-[14px]'
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          style={{ margin: '5px', cursor: 'pointer' }}
+        >
+          Kembali
+        </button>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <React.Fragment key={index}>
+            {index > 0 && ','}
+            <button
+              onClick={() => setCurrentPage(index + 1)}
+              style={{
+                margin: '5px',
+                fontWeight: currentPage === index + 1 ? 'bold' : 'normal',
+                color: currentPage === index + 1 ? '#000000' : '#9E9FA1',
+                cursor: 'pointer',
+              }}
+            >
+              {index + 1}
+            </button>
+          </React.Fragment>
+        ))}
+        <button
+          className='pl-5 text-[14px]'
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          style={{ margin: '5px', cursor: 'pointer' }}
+        >
+          Lanjut
+        </button>
+      </div>
     </div>
-
   );
 };
 

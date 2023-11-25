@@ -27,6 +27,7 @@ const ListPeminjaman: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     const fetchPeminjamanData = async () => {
@@ -136,7 +137,7 @@ const ListPeminjaman: React.FC = () => {
   return (
     <div className='font-poppins'>
       <div>
-        <Navbar/>
+        <Navbar setSearchValue={setSearchValue} />
         <Sidebar/>
         <img src='/images/BackgroundLabrary.png' className='w-full h-full' alt="gambar background"/>
       </div>
