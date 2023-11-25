@@ -13,19 +13,24 @@ interface Buku {
   tanggal_peminjaman: string;
   tanggal_pengembalian: string;
 }
-
 const RiwayatPeminjaman: React.FC = () => {
   const [daftarPeminjaman, setDaftarPeminjaman] = useState<Buku[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPeminjamanData = async () => {
+      if (!supabase) {
+        setError('Supabase belum terinisialisasi.');
+        return;
+      }
+
       try {
         const { data: peminjamanData, error: peminjamanError } = await supabase
           .from('riwayat_peminjaman')
-          .select('*'); // Ambil semua informasi dari riwayat_peminjaman
+          .select('*');
 
         if (peminjamanError) {
-          console.error('Error fetching peminjaman data:', peminjamanError.message);
+          setError(`Error fetching peminjaman data: ${peminjamanError.message}`);
           return;
         }
 
@@ -42,7 +47,7 @@ const RiwayatPeminjaman: React.FC = () => {
           .in('id_buku', idBukus);
 
         if (bukuError) {
-          console.error('Error fetching buku data:', bukuError.message);
+          setError(`Error fetching buku data: ${bukuError.message}`);
           return;
         }
 
@@ -53,12 +58,17 @@ const RiwayatPeminjaman: React.FC = () => {
 
         setDaftarPeminjaman(combinedData || []);
       } catch (error) {
-        console.error('Error fetching peminjaman data:', (error as any).message);
+        setError(`Error fetching data: ${(error as Error).message}`);
       }
     };
 
     fetchPeminjamanData();
   }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
 
   return (
     <div className='font-poppins'>
@@ -89,6 +99,7 @@ const RiwayatPeminjaman: React.FC = () => {
               </p>
               <div className='flex items-center pt-2 text-[#9E9FA1] mt-8'>
                 <p className='text-base italic'>Tanggal pengembalian: {peminjaman.tanggal_pengembalian}</p>
+              
                 <div className='mx-6 w-[180px] h-[50px] bg-[#C86F43] rounded-xl border-2 text-m text-white flex items-center justify-center'>
                   Ulas
                 </div>
