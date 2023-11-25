@@ -18,8 +18,8 @@ const riwayatPeminjaman: React.FC = () => {
         </div>
         <div className='text-[#426E6D] text-3xl font-bold flex items-center'>Riwayat Peminjaman</div>
       </div>
-{/* box buku */}
-<div className='ml-40 mr-40 h-[280px] rounded-lg border-2 border-slate-200 shadow-md flex flex-col mt-2 h-1/2 mx-4'>
+
+<div className='ml-[130px] mr-40 w-[990px] h-[280px] rounded-lg border-2 border-slate-200 shadow-md flex flex-col mt-2 mx-4'>
   <div className='flex items-start font-poppins'>
     <img src="/images/harrypotter.png" className='m-3 p-3 w-[200px] h-[255px]' />
     <div className="flex flex-col">
@@ -30,9 +30,32 @@ const riwayatPeminjaman: React.FC = () => {
           Harry Potter telah keluar dari rumah dua orang yang baru saja meninggal dan melihat kemenangannya atas Lord Voldemort ketika dia masih kecil.
         </span>
       </p>
-      <div className='my-4 py-1 px-3 bg-[#E47B47] bg-opacity-70 text-[#ffffff] rounded-2xl'>Sedang dipinjam</div>
-      <div className='flex items-center pt-2 text-[#9E9FA1] '>
-        
+      <div className='my-4 py-1 px-3 bg-[#E47B47] bg-opacity-70 text-[#ffffff] rounded-2xl text-center w-[180px]'>Sedang dipinjam</div>
+      <div className='flex items-center pt-1 text-[#9E9FA1]'> 
+        <p className='text-base italic'>Tanggal pengembalian: 08 Oktober 2023</p>
+        <div className='ml-8 mr-5 w-[180px] h-[50px] bg-[#C86F43] rounded-xl border-2 text-m text-white flex items-center justify-center'>
+          Ulas
+        </div>
+        <div className='w-[180px] h-[50px] bg-[#426E6D] rounded-xl border-2 text-m text-white flex items-center justify-center'>
+          Pinjam Lagi
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div className='ml-[130px] mr-40 w-[990px] h-[280px] rounded-lg border-2 border-slate-200 shadow-md flex flex-col mt-2 mx-4'>
+  <div className='flex items-start font-poppins'>
+    <img src="/images/harrypotter.png" className='m-3 p-3 w-[200px] h-[255px]' />
+    <div className="flex flex-col">
+      <p className="pt-[20px] text-xl font-bold">Harry Potter EA Pedra Filosofal</p>
+      <p className="pt-[10px] text-base">JK Rowling</p>
+      <p className='pt-[10px] text-base text-[#9E9FA1] overflow-hidden'>
+        <span className="block w-[500px] overflow-hidden overflow-ellipsis" style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2 }}>
+          Harry Potter telah keluar dari rumah dua orang yang baru saja meninggal dan melihat kemenangannya atas Lord Voldemort ketika dia masih kecil.
+        </span>
+      </p>
+      <div className='my-4 py-1 px-3 bg-[#488386] bg-opacity-70 text-[#ffffff] rounded-2xl text-center w-[200px]'>Sudah dikembalikan</div>
+      <div className='flex items-center pt-1 text-[#9E9FA1]'> 
         <p className='text-base italic'>Tanggal pengembalian: 08 Oktober 2023</p>
         <div className='ml-8 mr-5 w-[180px] h-[50px] bg-[#C86F43] rounded-xl border-2 text-m text-white flex items-center justify-center'>
           Ulas
