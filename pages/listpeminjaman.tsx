@@ -39,13 +39,12 @@ const ListPeminjaman: React.FC = () => {
         const idBukus = peminjamanData.map((peminjaman) => peminjaman.id_buku);
   
         if (idBukus.length === 0) {
-          // If there are no id_buku values, set an empty array for bukuData
           setDaftarPeminjaman([]);
           setDaftarBuku([]);
+          setIsListEmpty(true); // Set isListEmpty to true when there are no items
           return;
         }
   
-        // Fetching buku data based on the extracted id_bukus
         const { data: bukuData, error: bukuError } = await supabase
           .from('buku')
           .select('id_buku, judul, penulis, penerbit, tahun_terbit, cover_buku')
@@ -56,13 +55,13 @@ const ListPeminjaman: React.FC = () => {
           return;
         }
   
-        // Combining peminjamanData with bukuData
         const combinedData = peminjamanData.map((peminjaman) => {
           const buku = bukuData.find((buku) => buku.id_buku === peminjaman.id_buku);
           return { ...peminjaman, buku };
         });
   
         setDaftarPeminjaman(combinedData || []);
+        setIsListEmpty(combinedData.length === 0); // Update isListEmpty based on combinedData length
       } catch (error) {
         console.error('Error fetching peminjaman data:', (error as any).message);
       }
@@ -70,28 +69,7 @@ const ListPeminjaman: React.FC = () => {
   
     fetchPeminjamanData();
   }, []);
-  
-  // Menambahkan ke list peminjaman
-  const handleTambahPeminjaman = async (idBuku: string) => {
-    try {
-      // Menambahkan buku ke list_peminjaman
-      const { data, error } = await supabase
-        .from('list_peminjaman')
-        .upsert([{ id_buku: idBuku }], { onConflict: ['id_buku'] });
-
-      if (error) {
-        console.error('Error adding item:', error.message);
-        return;
-      }
-
-      // Menampilkan buku yang baru ditambahkan dengan memperbarui state
-      const bukuBaru = daftarBuku.find((buku) => buku.id_buku === idBuku);
-      setDaftarPeminjaman((prevData) => [...prevData, { buku: bukuBaru }]);
-    } catch (error) {
-      console.error('Error adding item:', (error as any).message);
-    }
-  };
-  
+   
   const handleCheckboxChange = (index: number) => {
     setCheckboxStatus((prevStatus) => {
       const newStatus = [...prevStatus];
@@ -99,6 +77,9 @@ const ListPeminjaman: React.FC = () => {
       return newStatus;
     });
   };
+
+  // Add state to track whether the list is empty
+  const [isListEmpty, setIsListEmpty] = useState<boolean>(false);
 
   /* handle delete */
   const handleDelete = async (idBuku: string) => {
@@ -154,8 +135,18 @@ const ListPeminjaman: React.FC = () => {
         <div className='text-[#426E6D] font-bold flex items-center' style={{fontSize: '40px'}}>List Peminjaman</div>
       </div>
 
-      <div className='flex' style={{ marginTop: daftarPeminjaman.length === 0 ? '0' : 'initial' }}>
-        <div className='mt-5 mb-8'>
+      <div className='flex' style={{ marginTop: isListEmpty ? '0' : 'initial' }}>
+        {isListEmpty ? (
+          <div className='mx-auto text-center mt-12'>
+            <p className='text-2xl font-bold mb-4'>List Peminjaman Kosong</p>
+            <Link href="/koleksibuku">
+              <button className='bg-[#C86F43] text-white py-3 px-6 rounded-lg'>
+                Lihat Koleksi Buku
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <div className='mt-5 mb-8'>
           {daftarPeminjaman.map((peminjaman, index) => (
             <div key={index} className='flex mt-5 ml-[70px]'>
               <div>
@@ -180,54 +171,59 @@ const ListPeminjaman: React.FC = () => {
                   <div className='text-[#9E9FA1]  w-[350px] overflow-hidden' style={{fontSize: '16px', textOverflow: 'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2}}>
                     Penerbit: {peminjaman.buku.penerbit}, Tahun Terbit: {peminjaman.buku.tahun_terbit}
                   </div>
-                  <button
-                    className='text-right w-[400px] text-[15px] pt-[75px] pr-2'
-                    onClick={() => handleDelete(peminjaman.buku.id_buku)}
-                  >
-                    <div className='text-[#C86F43]'>Hapus</div>
-                  </button>
+                  <div className='h-[50px] mt-[50px] w-[395px] text-right'>
+                    <button
+                      className='text-[15px] text-white rounded-lg bg-[#DA121B] py-1 px-3 mt-[19px]'
+                      onClick={() => handleDelete(peminjaman.buku.id_buku)}
+                    >
+                      Hapus
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
+        )}
 
-        <div className='mt-5 rounded-lg border-2 border-slate-200 mx-auto shadow-md w-[400px] h-[300px]'>
-          <div className='text-[#426E6D] text-center items-center justify-center pt-4' style={{fontSize: '28px'}}>Ringkasan Peminjaman
-            <div className='flex'>
-              <div className='pt-7 pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Total Buku</div>
-              <div className='pt-7 pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{totalBuku}</div>
+        {!isListEmpty && (
+          <div className='mt-5 rounded-lg border-2 border-slate-200 mx-auto shadow-md w-[400px] h-[300px]'>
+            <div className='text-[#426E6D] text-center items-center justify-center pt-4' style={{fontSize: '28px'}}>Ringkasan Peminjaman
+              <div className='flex'>
+                <div className='pt-7 pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Total Buku</div>
+                <div className='pt-7 pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{totalBuku}</div>
+              </div>
+              <div className='flex'>
+                <div className='pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Tanggal Pinjam</div>
+                <div className='pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{format(today, 'dd/MM/yyyy')}</div>
+              </div>
+              <div className='flex'>
+                <div className='pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Tanggal Kembali</div>
+                <div className='pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{format(returnDate, 'dd/MM/yyyy')}</div>
+              </div>
             </div>
-            <div className='flex'>
-              <div className='pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Tanggal Pinjam</div>
-              <div className='pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{format(today, 'dd/MM/yyyy')}</div>
+            <div className='text-center items-center justify-center'>
+              <button
+                className={`w-[126px] text-white py-3 mt-10 mb-4 bg-[#C86F43] rounded-lg ${totalBuku === 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+                style={{ fontSize: '20px' }}
+                onClick={totalBuku > 0 ? handlePinjamClick : undefined}
+                disabled={totalBuku === 0}
+              >
+                Pinjam
+              </button>
+              <ModalListPeminjaman
+                isOpen={modalOpen}
+                onClose={handleModalClose}
+                selectedBooks={daftarPeminjaman
+                  .filter((_, index) => checkboxStatus[index])
+                  .map(peminjaman => peminjaman.buku.judul)}
+                returnDate={format(returnDate, 'dd/MM/yyyy')} // Pass the return date
+              />
             </div>
-            <div className='flex'>
-              <div className='pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Tanggal Kembali</div>
-              <div className='pr-6 text-[#426E6D] text-right w-[200px]' style={{fontSize: '20px'}}>{format(returnDate, 'dd/MM/yyyy')}</div>
-            </div>
+            {/* <TambahPeminjaman onTambah={handleTambahPeminjaman}/> */}
           </div>
-          <div className='text-center items-center justify-center'>
-            <button
-              className={`w-[126px] text-white py-3 mt-10 mb-4 bg-[#C86F43] rounded-lg ${totalBuku === 0 ? 'cursor-not-allowed opacity-50' : ''}`}
-              style={{ fontSize: '20px' }}
-              onClick={totalBuku > 0 ? handlePinjamClick : undefined}
-              disabled={totalBuku === 0}
-            >
-              Pinjam
-            </button>
-            <ModalListPeminjaman
-              isOpen={modalOpen}
-              onClose={handleModalClose}
-              selectedBooks={daftarPeminjaman
-                .filter((_, index) => checkboxStatus[index])
-                .map(peminjaman => peminjaman.buku.judul)}
-              returnDate={format(returnDate, 'dd/MM/yyyy')} // Pass the return date
-            />
-          </div>
-          {/* <TambahPeminjaman onTambah={handleTambahPeminjaman}/> */}
-        </div>
-      </div>
+        )}
+      </div>    
     </div>
   )
 }
