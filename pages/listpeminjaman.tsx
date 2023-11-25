@@ -5,6 +5,8 @@ import { supabase } from '../supabase';
 import Navbar from '../src/components/Navbar';
 import Sidebar from '../src/components/Sidebar';
 import ModalListPeminjaman from '../src/components/ModalListPeminjaman';
+import { User } from '@supabase/supabase-js';
+import { useRouter } from 'next/router';
 // import TambahPeminjaman from '../pages/detailbuku'
 
 // ./pages/index.tsx or ./pages/_app.tsx
@@ -23,6 +25,8 @@ const ListPeminjaman: React.FC = () => {
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
   const [checkboxStatus, setCheckboxStatus] = useState<boolean[]>(Array().fill(false));
   const [modalOpen, setModalOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPeminjamanData = async () => {
@@ -35,6 +39,16 @@ const ListPeminjaman: React.FC = () => {
           console.error('Error fetching peminjaman data:', peminjamanError.message);
           return;
         }
+
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+        console.log(user?.id);
+        if (!user){
+          router.push('/')
+          console.log('helo')
+          console.log(user)
+          return
+        };
   
         const idBukus = peminjamanData.map((peminjaman) => peminjaman.id_buku);
   

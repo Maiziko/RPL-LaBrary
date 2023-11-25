@@ -25,6 +25,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { id_buku } = router.query;
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchBukuDetail = async () => {
@@ -33,6 +34,16 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
           console.error('ID buku tidak ditemukan atau Supabase tidak terinisialisasi');
           return;
         }
+
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+        console.log(user?.id);
+        if (!user){
+          router.push('/')
+          console.log('helo')
+          console.log(user)
+          return
+        };
     
         const { data, error } = await supabase
           .from('buku')
@@ -289,7 +300,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
         <div className="bg-white py-8 px-10 rounded-md">
           {/* Content for List Peminjaman Modal */}
-          <h2 className="text-2xl font-bold mb-5 text-[#426E6D] text-center">Gagal</h2>
+          <h2 className="text-2xl font-bold mb-5 text-[#426E6D] text-center">Gagal Menambah ke List Peminjaman</h2>
           {/* Add your list content here */}
           <p>Buku sudah terdapat di list peminjaman</p>
           {/* Close button */}
@@ -309,7 +320,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white py-8 px-10 rounded-md w-[400px]">
             <div className='text-center'>
-              <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal</h2>
+              <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal Menambah ke List Peminjaman</h2>
               <p>Buku sedang tidak tersedia</p>
             </div>
             <div className="mt-8 flex justify-between">
@@ -346,7 +357,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white py-8 px-10 rounded-md w-[400px]">
             <div className='text-center'>
-              <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal</h2>
+              <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal Meminjam</h2>
               <p>Buku sedang tidak tersedia</p>
             </div>
             <div className="mt-8 flex justify-between">

@@ -180,7 +180,7 @@ const Sidebar = () => {
           </Link>
         </li>
         <li className="">
-          <Link href="/riwayatbuku" className="flex px-10 py-3 w-[240px] text-white group hover:bg-[#C5D0D2] rounded-r-full hover:text-strong-orange text-14 transition-all duration-300">
+          <Link href="/riwayatpeminjaman" className="flex px-10 py-3 w-[240px] text-white group hover:bg-[#C5D0D2] rounded-r-full hover:text-strong-orange text-14 transition-all duration-300">
             <div className="w-[24px] h-[24px] relative group">
               <div className="bg-cover bg-center w-[24px] h-[24px] transition-opacity group-hover:opacity-0 absolute inset-0">
                 <img src="/images/riwayatOff.svg" alt="" className="group-hover:filter group-hover:grayscale-0" />

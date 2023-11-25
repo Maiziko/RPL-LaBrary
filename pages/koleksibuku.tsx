@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Navbar from '@src/components/Navbar';
 import Sidebar from '@src/components/Sidebar';
+import { User } from '@supabase/supabase-js';
 
 interface Buku {
   id_buku: number;
@@ -22,6 +23,7 @@ const koleksiBuku: React.FC = () => {
   const [selectedButton, setSelectedButton] = useState('Semua');
   const [screenWidth, setScreenWidth] = useState(0);
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +36,17 @@ const koleksiBuku: React.FC = () => {
         if (error) {
           throw new Error(error.message);
         }
+
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+        console.log(user?.id);
+        if (!user){
+          router.push('/')
+          console.log('helo')
+          console.log(user)
+          return
+        };
+        
         setDaftarBuku(data || []);
       } catch (error) {
         console.error('Error fetching data:', (error as any).message);
