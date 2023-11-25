@@ -61,13 +61,16 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   });
   
   const handlePinjamClick = () => {
-    setPeminjamanData({
-      judul: 'The Lord of the Rings', //JUDUL BLM SESUAI
-      tanggalPeminjaman: new Date().toLocaleDateString(), // Tanggal peminjaman sesuai dengan waktu saat ini
-      tanggalPengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(), // Tanggal pengembalian set 7 hari dari sekarang
-    });
-
-    setShowModalPinjam(true);
+    if (bukuDetail?.status_ketersediaan === 'Tersedia') {
+      setPeminjamanData({
+        judul: bukuDetail?.judul || '', // Sesuaikan dengan data yang ingin ditampilkan
+        tanggalPeminjaman: new Date().toLocaleDateString(),
+        tanggalPengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      });
+      setShowModalPinjam(true);
+    } else {
+      setShowModalNotAvailablePinjam(true);
+    }
   };
 
   const handleBatalPinjam = () => {
@@ -95,7 +98,10 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   };
 
   const [showModalListPeminjaman, setShowModalListPeminjaman] = useState(false);
-  
+  const [showModalExistingPeminjaman, setShowModalExistingPeminjaman] = useState(false);
+  const [showModalNotAvailable, setShowModalNotAvailable] = useState(false);
+  const [showModalNotAvailablePinjam, setShowModalNotAvailablePinjam] = useState(false);
+
   const handleListPeminjamanClick = async () => {
     try {
       // Pastikan ada data buku dan Supabase terinisialisasi
@@ -104,25 +110,59 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
         return;
       }
   
-      // Tambahkan data ke tabel list_peminjaman
-      const { data: peminjamanData, error: peminjamanError } = await supabase
-        .from('list_peminjaman')
-        .insert([
-          {
-            id_buku: id_buku.toString(),
-            // Tambahan data lainnya sesuai kebutuhan
-          },
-        ]);
+      // Ambil data buku
+      const { data: bookData, error: bookError } = await supabase
+        .from('buku')
+        .select('*')
+        .eq('id_buku', id_buku.toString())
+        .single();
   
-      if (peminjamanError) {
-        throw new Error(peminjamanError.message);
+      if (bookError) {
+        throw new Error(bookError.message);
       }
   
-      // Tampilkan modal sukses
-      setShowModalListPeminjaman(true);
+      // Periksa status ketersediaan buku
+      if (bookData && bookData.status_ketersediaan === 'Tersedia') {
+        // Tambahkan data ke tabel list_peminjaman
+        const { data: existingData, error: existingError } = await supabase
+          .from('list_peminjaman')
+          .select('*')
+          .eq('id_buku', id_buku.toString())
+          .single();
+  
+        if (existingData) {
+          // If the book is already in the list, show the existing modal
+          setShowModalExistingPeminjaman(true);
+        } else {
+          // If not, add the book to the list_peminjaman
+          const { data: peminjamanData, error: peminjamanError } = await supabase
+            .from('list_peminjaman')
+            .insert([
+              {
+                id_buku: id_buku.toString(),
+                // Tambahan data lainnya sesuai kebutuhan
+              },
+            ]);
+  
+          if (peminjamanError) {
+            throw new Error(peminjamanError.message);
+          }
+  
+          // Show success modal
+          setShowModalListPeminjaman(true);
+        }
+      } else {
+        // Jika buku tidak tersedia, tampilkan modal gagal
+        setShowModalNotAvailable(true);
+      }
     } catch (error) {
       console.error('Error handling list peminjaman:', error instanceof Error ? error.message : error);
     }
+  };
+  
+
+  const handleCloseExistingPeminjamanModal = () => {
+    setShowModalExistingPeminjaman(false);
   };
 
   const handleCloseListPeminjamanModal = () => {
@@ -131,6 +171,14 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
 
   const handleLihatListPeminjamanClick = () => {
     router.push('/listpeminjaman');
+  };
+
+  const handleNotAvailableModalClose = () => {
+    setShowModalNotAvailable(false);
+  };
+
+  const handleNotAvailablePinjamModalClose = () => {
+    setShowModalNotAvailablePinjam(false);
   };
   
 
@@ -175,7 +223,16 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
                   <div className='ml-[21px] mb-2 text-[#000000]'>{bukuDetail?.tahun_terbit}</div>
                 </div>
               </div>
-              <div className='mx-3 my-2 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center'>{bukuDetail?.status_ketersediaan}</div>
+              <div
+                className={
+                  bukuDetail?.status_ketersediaan === 'Tersedia'
+                    ? 'mx-3 h-[30px] bg-[#CCFBF1] text-[#047857] flex rounded-2xl items-center justify-center'
+                    : 'mx-3 h-[30px] bg-[#F88C91] text-[#DA121B] flex rounded-2xl items-center justify-center'
+                }
+                style={{ fontSize: '14px', marginTop: '1rem' }}
+              >
+                {bukuDetail?.status_ketersediaan === 'Tersedia' ? 'Tersedia' : 'Tidak tersedia'}
+              </div>
             </div>
           </div>
         </div>
@@ -227,6 +284,43 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
           Pinjam
         </button>
       </div>
+
+      {showModalExistingPeminjaman && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+        <div className="bg-white py-8 px-10 rounded-md">
+          {/* Content for List Peminjaman Modal */}
+          <h2 className="text-2xl font-bold mb-5 text-[#426E6D] text-center">Gagal</h2>
+          {/* Add your list content here */}
+          <p>Buku sudah terdapat di list peminjaman</p>
+          {/* Close button */}
+          <div className="mt-8 flex justify-end text-white">
+            <button onClick={handleCloseExistingPeminjamanModal} className="bg-[#7A7A7A] px-7 py-3 rounded-lg mr-10">
+              Tutup
+            </button>
+            <button onClick={handleLihatListPeminjamanClick} className='bg-[#426E6D] rounded-lg px-4'>
+              Lihat List Peminjaman
+            </button>
+          </div>
+        </div>
+      </div>
+      )}
+
+      {showModalNotAvailable && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white py-8 px-10 rounded-md w-[400px]">
+            <div className='text-center'>
+              <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal</h2>
+              <p>Buku sedang tidak tersedia</p>
+            </div>
+            <div className="mt-8 flex justify-between">
+              <button onClick={handleNotAvailableModalClose} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showModalPinjam && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white py-8 px-10 rounded-md">
@@ -238,10 +332,26 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
             </div>
             <div className="mt-4 flex justify-between">
               <button onClick={handleBatalPinjam} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
-                Batal
+                Tutup
               </button>
               <button onClick={handleConfirmPinjam} className="bg-[#C86F43] text-white px-6 py-3 rounded-lg">
                 Pinjam
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showModalNotAvailablePinjam && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white py-8 px-10 rounded-md w-[400px]">
+            <div className='text-center'>
+              <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal</h2>
+              <p>Buku sedang tidak tersedia</p>
+            </div>
+            <div className="mt-8 flex justify-between">
+              <button onClick={handleNotAvailablePinjamModalClose} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
+                Tutup
               </button>
             </div>
           </div>
