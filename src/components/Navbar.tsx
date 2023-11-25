@@ -1,9 +1,14 @@
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { supabase } from '../../supabase';
 
-const Navbar = () => {
-  const [avatarUrl, setAvatarUrl] = useState(null);
+interface NavbarProps {
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ setSearchValue }) => {
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [searchValue, setSearchValueLocal] = useState('');
 
   useEffect(() => {
     // Ambil ID pengguna dari penyimpanan lokal (localStorage)
@@ -42,7 +47,15 @@ const Navbar = () => {
             </div>
             <div className="w-[600px] h-10 pl-4 flex items-center justify-center rounded-full px-4 duration-300 cursor-pointer bg-white">
               <img src="/images/searchBar.svg" alt="Search Bar" />
-              <input className="text-[15px] ml-4 w-full bg-transparent focus:outline-none" placeholder="Cari di LaBrary..." />
+              <input
+                className="text-[15px] ml-4 w-full bg-transparent focus:outline-none"
+                placeholder="Cari di LaBrary..."
+                value={searchValue}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setSearchValueLocal(e.target.value);
+                  setSearchValue(e.target.value);
+                }}
+              />
             </div>
             <div className="mr-[50px] pl-[207px]">
               {avatarUrl ? (

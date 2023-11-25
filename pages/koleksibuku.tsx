@@ -24,6 +24,7 @@ const koleksiBuku: React.FC = () => {
   const [screenWidth, setScreenWidth] = useState(0);
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
   const [user, setUser] = useState<User | null>(null);
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,15 +38,6 @@ const koleksiBuku: React.FC = () => {
           throw new Error(error.message);
         }
 
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
-        console.log(user?.id);
-        if (!user){
-          router.push('/')
-          console.log('helo')
-          console.log(user)
-          return
-        };
         
         setDaftarBuku(data || []);
       } catch (error) {
@@ -69,14 +61,19 @@ const koleksiBuku: React.FC = () => {
   }, []);
 
   // book filter
-const filteredBooks =
-  selectedButton === 'Semua'
-    ? daftarBuku
-    : daftarBuku.filter(book => {
-      console.log('Selected Button:', selectedButton);
-      console.log('Book Kategori:', book.kategori);
-      return book.kategori.toLowerCase() === selectedButton.toLowerCase();
-    });
+  const filteredBooks =
+    selectedButton === 'Semua'
+    ? daftarBuku.filter(
+        (book) =>
+          book.judul.toLowerCase().includes(searchValue.toLowerCase()) ||
+          book.penulis.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : daftarBuku.filter(
+        (book) =>
+          book.kategori.toLowerCase() === selectedButton.toLowerCase() &&
+          (book.judul.toLowerCase().includes(searchValue.toLowerCase()) ||
+            book.penulis.toLowerCase().includes(searchValue.toLowerCase()))
+      );
     
     // button
   const handleButtonClick = (buttonName: string, event: React.MouseEvent<HTMLButtonElement>) => {
@@ -103,7 +100,7 @@ const filteredBooks =
   
   return (
     <div className='font-poppins'>
-      <Navbar/>
+      <Navbar setSearchValue={setSearchValue} />
       <Sidebar/>
       <div>
         <img src="/images/BackgroundLabrary.png" alt="gambar background" className='w-full h-full'/>
