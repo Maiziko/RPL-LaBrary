@@ -74,18 +74,33 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
     tanggalPengembalian: '',
   });
   
-  const handlePinjamClick = () => {
-    if (bukuDetail?.status_ketersediaan === 'Tersedia') {
+  const handlePinjamClick = async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData.user;
+    // Dapatkan data peminjaman dari riwayat_peminjaman
+    const { data: riwayatData } = await supabase
+      .from('riwayat_peminjaman')
+      .select('*')
+      .eq('id_buku', bukuDetail?.id_buku.toString())
+      .eq('id_akun', user?.id)
+      .single();
+  if (bukuDetail?.status_ketersediaan === 'Tersedia' ) {
+    // Check if the book is currently being borrowed
+    if (riwayatData && riwayatData.status_peminjaman === "sedang meminjam") {
+      setShowModalNotAvailablePinjamStatusPinjam(true);
+    } else {
       setPeminjamanData({
-        judul: bukuDetail?.judul || '', // Sesuaikan dengan data yang ingin ditampilkan
+        judul: bukuDetail?.judul || '',
         tanggalPeminjaman: new Date().toLocaleDateString(),
         tanggalPengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(),
       });
       setShowModalPinjam(true);
-    } else {
-      setShowModalNotAvailablePinjam(true);
     }
-  };
+  } else {
+    setShowModalNotAvailablePinjam(true);
+  }
+};
+
 
   const handleBatalPinjam = () => {
     // Reset data peminjaman
@@ -106,11 +121,9 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
       console.error('ID buku tidak ditemukan atau Supabase tidak terinisialisasi');
       return;
     }
-
     // Dapatkan informasi pengguna
     const { data: userData } = await supabase.auth.getUser();
     const user = userData.user;
-
     // Dapatkan data peminjaman dari list_peminjaman
     const { data: listPeminjamanData, error: listPeminjamanError } = await supabase
       .from('list_peminjaman')
@@ -123,19 +136,16 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
     }
 
     // Dapatkan data peminjaman dari riwayat_peminjaman
-    const { data: existingData } = await supabase
+    const { data: riwayatData } = await supabase
       .from('riwayat_peminjaman')
       .select('*')
       .eq('id_buku', id_buku.toString())
-      .eq('id', user?.id)
+      .eq('id_akun', user?.id)
       .single();
-    if (!listPeminjamanData.length) {
-      if (existingData?.status_peminjaman === "sedang meminjam") {
-        // Jika buku sudah ada dalam daftar dan sedang dipinjam, tampilkan modal yang sudah ada
-        console.log("Buku dengan judul", bukuDetail?.judul, "sedang Anda pinjam");
-        setShowModalExistingPeminjaman(true);
-      } else {
-        // Cek apakah buku pernah dipinjam dan sudah dikembalikan
+      
+    if (!listPeminjamanData.length && bukuDetail?.status_ketersediaan === "Tersedia") {
+      if (riwayatData && riwayatData.status_peminjaman !== "sedang meminjam") {
+        // jika pada status_peminjaman buku berstatus "sudah dikembalikan maka dapat dipinjam lagi"
         const { data: returnedBook } = await supabase
           .from('riwayat_peminjaman')
           .select('id_buku')
@@ -174,7 +184,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
             // Jika buku tidak tersedia, tampilkan modal gagal
             setShowModalNotAvailable(true);
           }
-        } else {
+      } else {
           // Jika buku belum pernah dipinjam atau belum dikembalikan, izinkan peminjaman
           await supabase
             .from('riwayat_peminjaman')
@@ -200,6 +210,10 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
           // Tampilkan modal keberhasilan
           // setShowModalListPeminjaman(true);
         }
+      } else {
+        // Jika buku sudah ada dalam daftar dan sedang dipinjam, tampilkan modal yang sudah ada
+        console.log("Buku dengan judul", bukuDetail?.judul, "sedang Anda pinjam");
+        setShowModalExistingPeminjaman(true);
       }
 }
  else {
@@ -259,6 +273,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   const [showModalExistingPeminjaman, setShowModalExistingPeminjaman] = useState(false);
   const [showModalNotAvailable, setShowModalNotAvailable] = useState(false);
   const [showModalNotAvailablePinjam, setShowModalNotAvailablePinjam] = useState(false);
+  const [showModalNotAvailablePinjamStatusPinjam, setShowModalNotAvailablePinjamStatusPinjam] = useState(false);
 
   const handleListPeminjamanClick = async () => {
     try {
@@ -281,6 +296,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   
       // Periksa status ketersediaan buku
       if (bookData && bookData.status_ketersediaan === 'Tersedia') {
+        // check apakah dia sedang meminjam buku tersebut atau tidak ? 
         const { data: { user } } = await supabase.auth.getUser();
         // Tambahkan data ke tabel list_peminjaman
         const { data: existingData, error: existingError } = await supabase
@@ -291,27 +307,40 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
           .single();
   
         if (existingData) {
-          // If the book is already in the list, show the existing modal
+          // jika buku sudah terdapat di list peminjaman
           setShowModalExistingPeminjaman(true);
         } else {
-          // If not, add the book to the list_peminjaman
-          const { data: peminjamanData, error: peminjamanError } = await supabase
-            .from('list_peminjaman')
-            .upsert([
-              {
-                id_buku: id_buku,
-                id: user?.id, // Menambahkan ID pengguna
-                // Tambahan data lainnya sesuai kebutuhan
-              },
-            ], {onConflict: ['id_buku']});
-  
-          if (peminjamanError) {
-            throw new Error(peminjamanError.message);
-          }
-  
-          // Show success modal
-          setShowModalListPeminjaman(true);
+          // check apakah buku sedang dipinjam atau tidak melalui database riwayat buku 
+          // jika status_peminjaman === "sedang meminjam" maka dia tidak dapat meminjam 
+          const { data: checkStatusBook } = await supabase
+           .from('riwayat_peminjaman')
+           .select('id_buku')
+           .eq('id_buku', id_buku.toString())
+           .eq('id_akun', user?.id)
+           .eq('status_peminjaman','sedang meminjam')
+           .single();
+
+           if (!checkStatusBook) {
+                const { data: peminjamanData, error: peminjamanError } = await supabase
+                  .from('list_peminjaman')
+                  .upsert([
+                    {
+                      id_buku: id_buku,
+                      id: user?.id, // Menambahkan ID pengguna
+                      // Tambahan data lainnya sesuai kebutuhan
+                    },
+                  ], {onConflict: ['id_buku']});
+
+                if (peminjamanError) {
+                    throw new Error(peminjamanError.message);
+                }
+                // Show success modal
+                setShowModalListPeminjaman(true);
+           } else {
+                console.log("Buku dengan judul",bukuDetail?.judul,"sedang Anda pinjam");
+           }
         }
+        // Check apakah dia sedang meminjam buku tersebut atau tidak ? 
       } else {
         // Jika buku tidak tersedia, tampilkan modal gagal
         setShowModalNotAvailable(true);
@@ -341,6 +370,10 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   const handleNotAvailablePinjamModalClose = () => {
     setShowModalNotAvailablePinjam(false);
   };
+
+  const handleNotAvailablePinjamStatusPinjam = () => {
+    setShowModalNotAvailablePinjamStatusPinjam(false);
+  }
   
 
   return (
@@ -512,6 +545,22 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
             </div>
             <div className="items-center justify-center mt-8 flex">
               <button onClick={handleNotAvailablePinjamModalClose} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showModalNotAvailablePinjamStatusPinjam && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white py-8 px-10 rounded-md w-[400px]">
+            <div className='text-center'>
+              <h2 className="text-2xl font-bold mb-5 text-[#426E6D]">Gagal Meminjam</h2>
+              <p>Buku ini sedang Anda Pinjam</p>
+            </div>
+            <div className="items-center justify-center mt-8 flex">
+              <button onClick={handleNotAvailablePinjamStatusPinjam} className="bg-[#7A7A7A] text-white px-7 py-3 rounded-lg">
                 Tutup
               </button>
             </div>

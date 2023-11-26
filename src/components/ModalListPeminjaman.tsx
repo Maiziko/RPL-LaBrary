@@ -1,6 +1,7 @@
 // PinjamModal.tsx
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../supabase';
+import router from 'next/router';
 
 interface Buku {
   id_buku: number;
@@ -97,6 +98,9 @@ interface ModalListPeminjamanProps {
                     .from('list_peminjaman')
                     .delete()
                     .in('id_buku', idBukuYangDipinjam);
+
+                // Refresh the list page
+                router.reload();
             }catch(error){
                 console.error('Error menambahkan peminjaman data:', (error as any).message);
             }
