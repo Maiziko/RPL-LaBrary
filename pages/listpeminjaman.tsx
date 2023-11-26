@@ -28,6 +28,7 @@ const ListPeminjaman: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const [searchValue, setSearchValue] = useState<string>('');
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchPeminjamanData = async () => {
@@ -93,6 +94,7 @@ const ListPeminjaman: React.FC = () => {
       return newStatus;
     });
   };
+
 
   // Add state to track whether the list is empty
   const [isListEmpty, setIsListEmpty] = useState<boolean>(false);

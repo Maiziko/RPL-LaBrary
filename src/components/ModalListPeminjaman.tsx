@@ -27,6 +27,7 @@ interface ModalListPeminjamanProps {
       return null;
     }
     const [bookInfo, setBookInfo] = useState<Buku[]>([]);
+    const [refresh, setRefresh] = useState<boolean>(false);
     
   useEffect(() => {
     const fetchBookInfo = async () => {
@@ -100,6 +101,9 @@ interface ModalListPeminjamanProps {
                 console.error('Error menambahkan peminjaman data:', (error as any).message);
             }
     }; 
+    const handleRefresh = () => {
+    setRefresh((prevRefresh) => !prevRefresh);
+  };
   
     return (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 font-poppins">
