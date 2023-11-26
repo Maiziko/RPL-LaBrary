@@ -297,13 +297,13 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
           // If not, add the book to the list_peminjaman
           const { data: peminjamanData, error: peminjamanError } = await supabase
             .from('list_peminjaman')
-            .insert([
+            .upsert([
               {
-                id_buku: id_buku.toString(),
+                id_buku: id_buku,
                 id: user?.id, // Menambahkan ID pengguna
                 // Tambahan data lainnya sesuai kebutuhan
               },
-            ]);
+            ], {onConflict: ['id_buku']});
   
           if (peminjamanError) {
             throw new Error(peminjamanError.message);

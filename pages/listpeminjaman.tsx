@@ -23,7 +23,7 @@ interface Buku {
 const ListPeminjaman: React.FC = () => {
   const [daftarPeminjaman, setDaftarPeminjaman] = useState<any[]>([]);
   const [daftarBuku, setDaftarBuku] = useState<Buku[]>([]);
-  const [checkboxStatus, setCheckboxStatus] = useState<boolean[]>(Array().fill(false));
+  const [checkboxStatus, setCheckboxStatus] = useState<boolean[]>(Array(daftarPeminjaman.length).fill(false));
   const [modalOpen, setModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
@@ -52,7 +52,7 @@ const ListPeminjaman: React.FC = () => {
           return;
         }
   
-        const idBukus = peminjamanData.map((peminjaman) => peminjaman.id_buku);
+        const idBukus = peminjamanData.map((peminjaman: { id_buku: any; }) => peminjaman.id_buku);
   
         if (idBukus.length === 0) {
           setDaftarPeminjaman([]);
@@ -71,8 +71,8 @@ const ListPeminjaman: React.FC = () => {
           return;
         }
   
-        const combinedData = peminjamanData.map((peminjaman) => {
-          const buku = bukuData.find((buku) => buku.id_buku === peminjaman.id_buku);
+        const combinedData = peminjamanData.map((peminjaman: { id_buku: any; }) => {
+          const buku = bukuData.find((buku: { id_buku: any; }) => buku.id_buku === peminjaman.id_buku);
           return { ...peminjaman, buku };
         });
   
@@ -232,7 +232,7 @@ const ListPeminjaman: React.FC = () => {
                 onClose={handleModalClose}
                 selectedBooks={daftarPeminjaman
                   .filter((_, index) => checkboxStatus[index])
-                  .map(peminjaman => peminjaman.buku.judul)}
+                  .map(peminjaman => ({ id_buku: peminjaman.buku.id_buku }))}
                 returnDate={format(returnDate, 'dd/MM/yyyy')} // Pass the return date
               />
             </div>
