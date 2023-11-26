@@ -29,6 +29,11 @@ interface ModalListPeminjamanProps {
     }
     const [bookInfo, setBookInfo] = useState<Buku[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
+    const [showModalSuccess, setShowModalSuccess] = useState(false);
+    const closeModal = () => {
+        setShowModalSuccess(false);
+        router.reload();
+    };
     
   useEffect(() => {
     const fetchBookInfo = async () => {
@@ -89,6 +94,10 @@ interface ModalListPeminjamanProps {
                 const updatedStok = buku.stokbuku - 1;
                 // Update stok buku berdasarkan id_buku
                 await supabase.from('buku').update({ stokbuku: updatedStok }).eq('id_buku', buku.id_buku);
+                  if (updatedStok === 0) {
+                    // Jika stok buku 0, ubah status_ketersediaan menjadi "Tidak Tersedia"
+                    await supabase.from('buku').update({ status_ketersediaan: "Tidak Tersedia" }).eq('id_buku', buku.id_buku);
+                  }
                 });
                 await Promise.all(updateStokPromises);
                 
@@ -98,9 +107,9 @@ interface ModalListPeminjamanProps {
                     .from('list_peminjaman')
                     .delete()
                     .in('id_buku', idBukuYangDipinjam);
-
+                setShowModalSuccess(true);
                 // Refresh the list page
-                router.reload();
+                // router.reload();
             }catch(error){
                 console.error('Error menambahkan peminjaman data:', (error as any).message);
             }
@@ -133,6 +142,18 @@ interface ModalListPeminjamanProps {
                     </button>
                 </div>
             </div>
+            {/* Modal Peminjaman Berhasil */}
+      {showModalSuccess && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-5 rounded-md text-[#426E6D]">
+            <h2 className="text-xl font-bold mb-3">Peminjaman Berhasil!</h2>
+            <p>Anda telah berhasil meminjam buku</p>
+            <button onClick={closeModal} className="bg-[#7a7a7a] text-white px-3 py-1 rounded-md mt-4">
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
         </div>
     );
 };

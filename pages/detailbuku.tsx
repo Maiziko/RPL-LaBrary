@@ -170,7 +170,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
               ], { onConflict: ['id_buku', 'id_akun'] });
 
             // Kurangi stok buku di tabel buku
-            await supabase
+            const updatedData = await supabase
               .from('buku')
               .update({
                 stokbuku: (bukuDetail?.stokbuku || 0) - 1,
@@ -178,13 +178,24 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
               .eq('id_buku', id_buku.toString())
               .single();
 
+            // Setelah mengupdate stok buku, periksa jika stok buku sekarang 0
+            if ((updatedData?.stokbuku || 0) === 0) {
+            // Jika stok buku 0, ubah status_ketersediaan menjadi "Tidak Tersedia"
+                await supabase
+                  .from('buku')
+                  .update({
+                    status_ketersediaan: "Tidak Tersedia",
+                  })
+                  .eq('id_buku', id_buku.toString());
+            }
+
             // Tampilkan modal keberhasilan
             setShowModalListPeminjaman(true);
           } else {
             // Jika buku tidak tersedia, tampilkan modal gagal
             setShowModalNotAvailable(true);
           }
-      } else {
+          } else {
           // Jika buku belum pernah dipinjam atau belum dikembalikan, izinkan peminjaman
           await supabase
             .from('riwayat_peminjaman')
@@ -199,13 +210,24 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
             ], { onConflict: ['id_buku', 'id_akun'] });
 
           // Kurangi stok buku di tabel buku
-          await supabase
-            .from('buku')
-            .update({
-              stokbuku: (bukuDetail?.stokbuku || 0) - 1,
-            })
-            .eq('id_buku', id_buku.toString())
-            .single();
+            const updated1Data = await supabase
+              .from('buku')
+              .update({
+                stokbuku: (bukuDetail?.stokbuku || 0) - 1,
+              })
+              .eq('id_buku', id_buku.toString())
+              .single();
+
+            // Setelah mengupdate stok buku, periksa jika stok buku sekarang 0
+            if ((updated1Data?.stokbuku || 0) === 0) {
+            // Jika stok buku 0, ubah status_ketersediaan menjadi "Tidak Tersedia"
+                await supabase
+                  .from('buku')
+                  .update({
+                    status_ketersediaan: "Tidak Tersedia",
+                  })
+                  .eq('id_buku', id_buku.toString());
+            }
 
           // Tampilkan modal keberhasilan
           // setShowModalListPeminjaman(true);
@@ -239,13 +261,24 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
         ], { onConflict: ['id_buku', 'id_akun'] });
 
       // Kurangi stok buku di tabel buku
-      await supabase
-        .from('buku')
-        .update({
-          stokbuku: (bukuDetail?.stokbuku || 0) - 1,
-        })
-        .eq('id_buku', id_buku.toString())
-        .single();
+            const updated2Data = await supabase
+              .from('buku')
+              .update({
+                stokbuku: (bukuDetail?.stokbuku || 0) - 1,
+              })
+              .eq('id_buku', id_buku.toString())
+              .single();
+
+            // Setelah mengupdate stok buku, periksa jika stok buku sekarang 0
+            if ((updated2Data?.stokbuku || 0) === 0) {
+            // Jika stok buku 0, ubah status_ketersediaan menjadi "Tidak Tersedia"
+                await supabase
+                  .from('buku')
+                  .update({
+                    status_ketersediaan: "Tidak Tersedia",
+                  })
+                  .eq('id_buku', id_buku.toString());
+            }
 
       if (peminjamanError) {
         throw new Error(peminjamanError.message);
@@ -320,7 +353,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
            .eq('status_peminjaman','sedang meminjam')
            .single();
 
-           if (!checkStatusBook) {
+           if (!checkStatusBook && checkStatusBook.status_peminjaman !== "sedang meminjam") {
                 const { data: peminjamanData, error: peminjamanError } = await supabase
                   .from('list_peminjaman')
                   .upsert([
@@ -337,6 +370,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
                 // Show success modal
                 setShowModalListPeminjaman(true);
            } else {
+                setShowModalNotAvailablePinjamStatusPinjam(true);
                 console.log("Buku dengan judul",bukuDetail?.judul,"sedang Anda pinjam");
            }
         }
