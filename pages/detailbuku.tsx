@@ -17,6 +17,7 @@ interface BukuDetail {
   cover_buku: string;
   kategori: string;
   tahun_terbit: string;
+  stokbuku:number;
 }
 
 const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
@@ -98,13 +99,157 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
     setShowModalPinjam(false);
   };
 
-  const handleConfirmPinjam = () => {
-    // Lakukan logika untuk menyimpan peminjaman ke database atau tempat penyimpanan lainnya
+  const handleConfirmPinjam = async () => {
+  try {
+    // Pastikan id_buku dan supabase sudah didefinisikan dan diinisialisasi sebelumnya
+    if (!id_buku || !supabase) {
+      console.error('ID buku tidak ditemukan atau Supabase tidak terinisialisasi');
+      return;
+    }
 
+    // Dapatkan informasi pengguna
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData.user;
+
+    // Dapatkan data peminjaman dari list_peminjaman
+    const { data: listPeminjamanData, error: listPeminjamanError } = await supabase
+      .from('list_peminjaman')
+      .select('*')
+      .eq('id_buku', id_buku.toString())
+      .eq('id', user?.id);
+
+    if (listPeminjamanError) {
+      throw new Error(listPeminjamanError.message);
+    }
+
+    // Dapatkan data peminjaman dari riwayat_peminjaman
+    const { data: existingData } = await supabase
+      .from('riwayat_peminjaman')
+      .select('*')
+      .eq('id_buku', id_buku.toString())
+      .eq('id', user?.id)
+      .single();
+    if (!listPeminjamanData.length) {
+      if (existingData?.status_peminjaman === "sedang meminjam") {
+        // Jika buku sudah ada dalam daftar dan sedang dipinjam, tampilkan modal yang sudah ada
+        console.log("Buku dengan judul", bukuDetail?.judul, "sedang Anda pinjam");
+        setShowModalExistingPeminjaman(true);
+      } else {
+        // Cek apakah buku pernah dipinjam dan sudah dikembalikan
+        const { data: returnedBook } = await supabase
+          .from('riwayat_peminjaman')
+          .select('id_buku')
+          .eq('id_buku', id_buku.toString())
+          .eq('id_akun', user?.id)
+          .eq('status_peminjaman', 'sudah dikembalikan')
+          .single();
+
+        if (returnedBook) {
+          // Jika buku sudah dikembalikan dan status_ketersediaan buku "Tersedia", izinkan peminjaman kembali
+          if (bukuDetail?.status_ketersediaan === 'Tersedia') {
+            await supabase
+              .from('riwayat_peminjaman')
+              .insert([
+                {
+                  id_buku: id_buku.toString(),
+                  id_akun: user?.id,
+                  tanggal_peminjaman: new Date().toISOString(),
+                  tanggal_pengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                  status_peminjaman: "sedang meminjam",
+                },
+              ], { onConflict: ['id_buku', 'id_akun'] });
+
+            // Kurangi stok buku di tabel buku
+            await supabase
+              .from('buku')
+              .update({
+                stokbuku: (bukuDetail?.stokbuku || 0) - 1,
+              })
+              .eq('id_buku', id_buku.toString())
+              .single();
+
+            // Tampilkan modal keberhasilan
+            setShowModalListPeminjaman(true);
+          } else {
+            // Jika buku tidak tersedia, tampilkan modal gagal
+            setShowModalNotAvailable(true);
+          }
+        } else {
+          // Jika buku belum pernah dipinjam atau belum dikembalikan, izinkan peminjaman
+          await supabase
+            .from('riwayat_peminjaman')
+            .insert([
+              {
+                id_buku: id_buku.toString(),
+                id_akun: user?.id,
+                tanggal_peminjaman: new Date().toISOString(),
+                tanggal_pengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                status_peminjaman: "sedang meminjam",
+              },
+            ], { onConflict: ['id_buku', 'id_akun'] });
+
+          // Kurangi stok buku di tabel buku
+          await supabase
+            .from('buku')
+            .update({
+              stokbuku: (bukuDetail?.stokbuku || 0) - 1,
+            })
+            .eq('id_buku', id_buku.toString())
+            .single();
+
+          // Tampilkan modal keberhasilan
+          // setShowModalListPeminjaman(true);
+        }
+      }
+}
+ else {
+      // Hapus buku dari list_peminjaman
+      await supabase
+        .from('list_peminjaman')
+        .delete()
+        .eq('id_buku', id_buku)
+        .eq('id', user?.id)
+        .single();
+
+      // Tambahkan buku ke riwayat_peminjaman
+      const { data: peminjamanData, error: peminjamanError } = await supabase
+        .from('riwayat_peminjaman')
+        .insert([
+          {
+            id_buku: id_buku.toString(),
+            id_akun: user?.id,
+            tanggal_peminjaman: new Date().toISOString(),
+            tanggal_pengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            status_peminjaman: "sedang meminjam",
+          },
+        ], { onConflict: ['id_buku', 'id_akun'] });
+
+      // Kurangi stok buku di tabel buku
+      await supabase
+        .from('buku')
+        .update({
+          stokbuku: (bukuDetail?.stokbuku || 0) - 1,
+        })
+        .eq('id_buku', id_buku.toString())
+        .single();
+
+      if (peminjamanError) {
+        throw new Error(peminjamanError.message);
+      }
+
+      // Tampilkan modal keberhasilan
+      // setShowModalListPeminjaman(true);
+    }
+  } catch (error) {
+    console.error('Error handling list peminjaman 1:', error instanceof Error ? error.message : error);
+  } finally {
     // Setelah peminjaman berhasil, tampilkan modals peminjaman berhasil
     setShowModalPinjam(false);
     setShowModalSuccess(true);
-  };
+
+  }
+};
+
 
   const closeModal = () => {
     setShowModalSuccess(false);
