@@ -67,7 +67,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
     };
 
     fetchBukuDetail();
-  }, [id_buku, supabase]);
+  }, [id_buku, router]);
 
   const [peminjamanData, setPeminjamanData] = useState({
     judul: '',
@@ -421,13 +421,13 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
       <Navbar setSearchValue={setSearchValue} />
       <Sidebar/>
       <div>
-        <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>
+        <Image src="/images/BackgroundLabrary.png" className='w-full h-full' width ={1920} height={1080} alt="gambar background"/>
       </div>
         
       <div className='flex pt-8 pb-4'>
         <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
           <Link href="/koleksibuku">
-            <img src="/icon/BackButton.png" alt="" />
+            <Image src="/icon/BackButton.png" alt="" width={54} height={54}/>
           </Link>
         </div>
         <div className='text-[#426E6D] text-3xl font-bold flex items-center'>Detail Buku</div>
@@ -437,7 +437,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
         <div className='w-[560px] h-[320px] rounded-lg border-2 border-slate-200 shadow-md mr-2 mb-3 p-5 flex'>
           {/* Isi Detail Buku */}
           <div className="flex flex-wrap">
-            <img src={bukuDetail?.cover_buku} className='w-[180px] h-[250px]' alt='Book cover' />
+              <img src={bukuDetail?.cover_buku} className='w-[180px] h-[250px]' alt='Book cover' />
             <div className="ml-[50px] text-[#858585]" style={{ fontSize: '18px', flex: '1' }}>
               <div className="text-[#858585]" style={{ fontSize: '18px' }}>
                 <div className="text-[#858585]" style={{ fontSize: '18px' }}>Judul Buku</div>

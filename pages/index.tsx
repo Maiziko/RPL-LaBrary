@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 
 const Login: React.FC = () => {
@@ -39,7 +40,7 @@ const Login: React.FC = () => {
   return (
     <div className='flex font-poppins'>      
       <div className='w-1/2 h-screen flex flex-col'>
-        <img src = '/images/LibraryImage.png' className='h-full object-cover'/>
+        <Image src='/images/LibraryImage.png' className='h-full object-cover' width={640} height={746} alt={''}/>
       </div> 
 
       <div className='w-1/2 h-screen bg-[#42898C] flex flex-col justify-between'>

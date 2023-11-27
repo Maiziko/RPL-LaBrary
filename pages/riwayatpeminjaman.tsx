@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Navbar from '@src/components/Navbar';
 import Sidebar from '@src/components/Sidebar';
@@ -19,6 +20,7 @@ interface Buku {
 
 // Interface untuk representasi objek riwayat peminjaman
 interface RiwayatPeminjaman {
+  buku: any;
   id_peminjaman: any;
   id_buku: number;
   id_akun: any;
@@ -82,8 +84,8 @@ const RiwayatPeminjaman: React.FC = () => {
         }
   
         // Menggabungkan data riwayat peminjaman dengan bukuData
-        const combinedData = riwayatData.map((riwayat) => {
-          const buku = bukuData.find((buku) => buku.id_buku === riwayat.id_buku);
+        const combinedData = riwayatData.map((riwayat: { id_buku: any; }) => {
+          const buku = bukuData.find((buku: { id_buku: any; }) => buku.id_buku === riwayat.id_buku);
           return { ...riwayat, buku };
         });
   
@@ -95,7 +97,7 @@ const RiwayatPeminjaman: React.FC = () => {
     };
   
     fetchRiwayatData();
-  }, []);
+  }, [router]);
 
   const [isListEmpty, setIsListEmpty] = useState<boolean>(false);
 
@@ -103,7 +105,6 @@ const RiwayatPeminjaman: React.FC = () => {
   const handlePinjamLagi = (idBuku: number) => {
     // Mendapatkan instance router
     const router = useRouter();
-
     // Navigasi ke halaman /detailbuku/[idBuku]
     router.push(`/detailbuku/${idBuku}`);
   };
@@ -114,14 +115,14 @@ const RiwayatPeminjaman: React.FC = () => {
       <Sidebar/>
       {/* Bagian Header */}
       <div>
-        <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>
+                <Image src="/images/BackgroundLabrary.png" className='w-full h-full' width ={1920} height={1080} alt="gambar background"/>
       </div>
         
       <div className='flex pt-8 pb-4'>
         <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
           {/* Button untuk kembali ke halaman utama */}
           <Link href="/">
-            <img src="/icon/BackButton.png" alt="" />
+            <Image src="/icon/BackButton.png" alt="" width={54} height={54}/>
           </Link>
         </div>
         <div className='text-[#426E6D] font-bold flex items-center' style={{fontSize: '40px'}}>Riwayat Peminjaman</div>
