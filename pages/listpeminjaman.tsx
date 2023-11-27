@@ -7,6 +7,7 @@ import Sidebar from '../src/components/Sidebar';
 import ModalListPeminjaman from '../src/components/ModalListPeminjaman';
 import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 // import TambahPeminjaman from '../pages/detailbuku'
 
 // ./pages/index.tsx or ./pages/_app.tsx
@@ -85,7 +86,7 @@ const ListPeminjaman: React.FC = () => {
     };
   
     fetchPeminjamanData();
-  }, [user?.id]);
+  }, [router, user?.id]);
    
   const handleCheckboxChange = (index: number) => {
     setCheckboxStatus((prevStatus) => {
@@ -141,13 +142,13 @@ const ListPeminjaman: React.FC = () => {
       <div>
         <Navbar setSearchValue={setSearchValue} />
         <Sidebar/>
-        <img src='/images/BackgroundLabrary.png' className='w-full h-full' alt="gambar background"/>
+        <Image src="/images/BackgroundLabrary.png" className='w-full h-full' width ={1920} height={1080} alt="gambar background"/>
       </div>
         
       <div className='flex pt-8 pb-4'>
         <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
           <Link href="/koleksibuku">
-            <img src="/icon/BackButton.png"/>
+            <Image src="/icon/BackButton.png" alt="" width={54} height={54}/>
           </Link>
         </div>
         <div className='text-[#426E6D] font-bold flex items-center' style={{fontSize: '40px'}}>List Peminjaman</div>
