@@ -7,6 +7,7 @@ import Navbar from '@src/components/Navbar';
 import Sidebar from '@src/components/Sidebar';
 import { User } from '@supabase/supabase-js';
 
+
 interface BukuDetail {
   id_buku: number;
   judul: string;
@@ -86,7 +87,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
       .single();
   if (bukuDetail?.status_ketersediaan === 'Tersedia' ) {
     // Check if the book is currently being borrowed
-    if (riwayatData && riwayatData.status_peminjaman === "sedang meminjam") {
+    if (riwayatData && riwayatData.status_peminjaman && riwayatData.status_peminjaman === "Sedang dipinjam") {
       setShowModalNotAvailablePinjamStatusPinjam(true);
     } else {
       setPeminjamanData({
@@ -144,18 +145,18 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
       .single();
       
     if (!listPeminjamanData.length && bukuDetail?.status_ketersediaan === "Tersedia") {
-      if (riwayatData && riwayatData.status_peminjaman !== "sedang meminjam") {
-        // jika pada status_peminjaman buku berstatus "sudah dikembalikan maka dapat dipinjam lagi"
+      if (riwayatData?.status_peminjaman !== "Sedang dipinjam") {
+        // jika pada status_peminjaman buku berstatus "Selesai maka dapat dipinjam lagi"
         const { data: returnedBook } = await supabase
           .from('riwayat_peminjaman')
           .select('id_buku')
           .eq('id_buku', id_buku.toString())
           .eq('id_akun', user?.id)
-          .eq('status_peminjaman', 'sudah dikembalikan')
+          .eq('status_peminjaman', 'Selesai')
           .single();
 
         if (returnedBook) {
-          // Jika buku sudah dikembalikan dan status_ketersediaan buku "Tersedia", izinkan peminjaman kembali
+          // Jika buku Selesai dan status_ketersediaan buku "Tersedia", izinkan peminjaman kembali
           if (bukuDetail?.status_ketersediaan === 'Tersedia') {
             await supabase
               .from('riwayat_peminjaman')
@@ -165,7 +166,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
                   id_akun: user?.id,
                   tanggal_peminjaman: new Date().toISOString(),
                   tanggal_pengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-                  status_peminjaman: "sedang meminjam",
+                  status_peminjaman: "Sedang dipinjam",
                 },
               ], { onConflict: ['id_buku', 'id_akun'] });
 
@@ -205,7 +206,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
                 id_akun: user?.id,
                 tanggal_peminjaman: new Date().toISOString(),
                 tanggal_pengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-                status_peminjaman: "sedang meminjam",
+                status_peminjaman: "Sedang dipinjam",
               },
             ], { onConflict: ['id_buku', 'id_akun'] });
 
@@ -235,7 +236,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
       } else {
         // Jika buku sudah ada dalam daftar dan sedang dipinjam, tampilkan modal yang sudah ada
         console.log("Buku dengan judul", bukuDetail?.judul, "sedang Anda pinjam");
-        setShowModalExistingPeminjaman(true);
+        // setShowModalExistingPeminjaman(true);
       }
 }
  else {
@@ -256,7 +257,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
             id_akun: user?.id,
             tanggal_peminjaman: new Date().toISOString(),
             tanggal_pengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            status_peminjaman: "sedang meminjam",
+            status_peminjaman: "Sedang dipinjam",
           },
         ], { onConflict: ['id_buku', 'id_akun'] });
 
@@ -329,7 +330,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
   
       // Periksa status ketersediaan buku
       if (bookData && bookData.status_ketersediaan === 'Tersedia') {
-        // check apakah dia sedang meminjam buku tersebut atau tidak ? 
+        // check apakah dia Sedang dipinjam buku tersebut atau tidak ? 
         const { data: { user } } = await supabase.auth.getUser();
         // Tambahkan data ke tabel list_peminjaman
         const { data: existingData, error: existingError } = await supabase
@@ -339,42 +340,43 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
           .eq('id', user?.id) // Menambahkan kondisi ID pengguna
           .single();
   
-        if (existingData) {
-          // jika buku sudah terdapat di list peminjaman
-          setShowModalExistingPeminjaman(true);
-        } else {
+        if (!existingData) {
           // check apakah buku sedang dipinjam atau tidak melalui database riwayat buku 
-          // jika status_peminjaman === "sedang meminjam" maka dia tidak dapat meminjam 
+          // jika status_peminjaman === "Sedang dipinjam" maka dia tidak dapat meminjam 
           const { data: checkStatusBook } = await supabase
            .from('riwayat_peminjaman')
            .select('id_buku')
            .eq('id_buku', id_buku.toString())
            .eq('id_akun', user?.id)
-           .eq('status_peminjaman','sedang meminjam')
+           .eq('status_peminjaman','Sedang dipinjam')
            .single();
 
-           if (!checkStatusBook && checkStatusBook.status_peminjaman !== "sedang meminjam") {
-                const { data: peminjamanData, error: peminjamanError } = await supabase
+           if (!checkStatusBook || checkStatusBook?.status_peminjaman !== "Sedang dipinjam") {
+                 await supabase
                   .from('list_peminjaman')
                   .upsert([
                     {
                       id_buku: id_buku,
-                      id: user?.id, // Menambahkan ID pengguna
-                      // Tambahan data lainnya sesuai kebutuhan
+                      id: user?.id, 
                     },
-                  ], {onConflict: ['id_buku']});
+                  ]);
+                  console.log(id_buku,user?.id);
 
-                if (peminjamanError) {
-                    throw new Error(peminjamanError.message);
-                }
+                // if (listBaruError) {
+                //     throw new Error(listBaruError.message);
+                // }
+                // console.log(listBaruData);
                 // Show success modal
                 setShowModalListPeminjaman(true);
            } else {
                 setShowModalNotAvailablePinjamStatusPinjam(true);
                 console.log("Buku dengan judul",bukuDetail?.judul,"sedang Anda pinjam");
            }
+        } else {
+          // jika buku sudah terdapat di list peminjaman
+          setShowModalExistingPeminjaman(true);
         }
-        // Check apakah dia sedang meminjam buku tersebut atau tidak ? 
+        // Check apakah dia Sedang dipinjam buku tersebut atau tidak ? 
       } else {
         // Jika buku tidak tersedia, tampilkan modal gagal
         setShowModalNotAvailable(true);

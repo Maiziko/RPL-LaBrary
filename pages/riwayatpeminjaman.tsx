@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Navbar from '@src/components/Navbar';
+import Sidebar from '@src/components/Sidebar';
 
 // Interface untuk representasi objek buku
 interface Buku {
@@ -92,6 +94,10 @@ const handlePinjamLagi = (idBuku: number) => {
   // JSX untuk tampilan komponen
   return (
     <div className='font-poppins'>
+      <Navbar setSearchValue={function (value: React.SetStateAction<string>): void {
+        throw new Error('Function not implemented.');
+      } }/>
+      <Sidebar/>
       {/* Bagian Header */}
       <div>
         <img src="/images/BackgroundLabrary.png" className='w-full h-full' alt="gambar background"/>
@@ -100,7 +106,7 @@ const handlePinjamLagi = (idBuku: number) => {
       <div className='flex pt-8 pb-4'>
         <div className='pl-9 pr-5 text-xl flex items-center justify-between'>
           {/* Button untuk kembali ke halaman utama */}
-          <Link href="/">
+          <Link href="/koleksibuku">
             <img src="/icon/BackButton.png" alt="" />
           </Link>
         </div>
@@ -130,7 +136,7 @@ const handlePinjamLagi = (idBuku: number) => {
                         {riwayat.buku.deskripsi}
                       </p>
                 </div>
-                <div className={`my-4 py-1 px-3 ${riwayat.status_peminjaman === "sedang meminjam" ? 'bg-[#E47B47] bg-opacity-70' : 'bg-[#426E6D] bg-opacity-70 px-6'} text-[#ffffff] rounded-2xl text-center w-[180px]`}>
+                <div className={`my-4 py-1 px-3 ${riwayat.status_peminjaman === "Sedang dipinjam" ? 'bg-[#E47B47] bg-opacity-70' : 'bg-[#426E6D] bg-opacity-70 px-6'} text-[#ffffff] rounded-2xl text-center w-[180px]`}>
                     {riwayat.status_peminjaman}
                 </div>
                 <div className='mt-10'>
@@ -139,12 +145,12 @@ const handlePinjamLagi = (idBuku: number) => {
             </div>
             <div className="flex flex-row-reverse md:flex-row justify-end items-end">
                 <div className="py-2">
-                    <button className={`mr-5 w-[120px] h-[50px] bg-[#C86F43] rounded-xl border-2 text-m text-white flex items-center justify-center ${riwayat.status_peminjaman === "sedang meminjam" ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <button className={`mr-5 w-[120px] h-[50px] bg-[#C86F43] rounded-xl border-2 text-m text-white flex items-center justify-center ${riwayat.status_peminjaman === "Sedang dipinjam" ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         Ulas
                     </button>
                 </div>
                 <div className="py-2">
-                    <button className={`w-[120px] h-[50px] bg-[#426E6D] rounded-xl border-2 text-m text-white flex items-center justify-center ${riwayat.status_peminjaman === "sedang meminjam" ? 'pointer-events-none opacity-50' : ''} ${riwayat.status_peminjaman === "sudah dikembalikan" ? '' : 'cursor-not-allowed'}`} onClick={() => handlePinjamLagi(riwayat.buku.id_buku)}>
+                    <button className={`w-[120px] h-[50px] bg-[#426E6D] rounded-xl border-2 text-m text-white flex items-center justify-center ${riwayat.status_peminjaman === "Sedang dipinjam" ? 'pointer-events-none opacity-50' : ''} ${riwayat.status_peminjaman === "Selesai" ? '' : 'cursor-not-allowed'}`} onClick={() => handlePinjamLagi(riwayat.buku.id_buku)}>
                         Pinjam Lagi
                     </button>
                 </div>

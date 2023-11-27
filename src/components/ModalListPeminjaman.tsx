@@ -67,7 +67,7 @@ interface ModalListPeminjamanProps {
                 id_akun: user?.id,
                 tanggal_peminjaman: new Date().toISOString(),
                 tanggal_pengembalian: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-                status_peminjaman: 'sedang meminjam',
+                status_peminjaman: 'Sedang dipinjam',
             }));
 
                 await supabase
