@@ -205,7 +205,7 @@ const ListPeminjaman: React.FC = () => {
         )}
 
         {!isListEmpty && (
-          <div className='mt-5 rounded-lg border-2 border-slate-200 mx-auto shadow-md w-[400px] h-[300px]'>
+          <div className='rounded-lg border-2 border-slate-200 mx-auto shadow-md w-[400px] h-[300px] mb-8 mt-[40px]'>
             <div className='text-[#426E6D] text-center items-center justify-center pt-4' style={{fontSize: '28px'}}>Ringkasan Peminjaman
               <div className='flex'>
                 <div className='pt-7 pl-6 text-left text-[#426E6D] w-[200px]' style={{fontSize: '20px'}}>Total Buku</div>

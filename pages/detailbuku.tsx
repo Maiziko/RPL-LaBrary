@@ -185,7 +185,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
                 await supabase
                   .from('buku')
                   .update({
-                    status_ketersediaan: "Tidak Tersedia",
+                    status_ketersediaan: "Tidak tersedia",
                   })
                   .eq('id_buku', id_buku.toString());
             }
@@ -225,7 +225,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
                 await supabase
                   .from('buku')
                   .update({
-                    status_ketersediaan: "Tidak Tersedia",
+                    status_ketersediaan: "Tidak tersedia",
                   })
                   .eq('id_buku', id_buku.toString());
             }
@@ -276,7 +276,7 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
                 await supabase
                   .from('buku')
                   .update({
-                    status_ketersediaan: "Tidak Tersedia",
+                    status_ketersediaan: "Tidak tersedia",
                   })
                   .eq('id_buku', id_buku.toString());
             }
@@ -397,6 +397,10 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
 
   const handleLihatListPeminjamanClick = () => {
     router.push('/listpeminjaman');
+  };
+
+  const handleLihatRiwayatPeminjamanClick = () => {
+    router.push('/riwayatpeminjaman')
   };
 
   const handleNotAvailableModalClose = () => {
@@ -607,15 +611,23 @@ const DetailBuku: React.FC<{ bukuJudul: string }> = ({ bukuJudul }) => {
       {/* Modal Peminjaman Berhasil */}
       {showModalSuccess && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-5 rounded-md text-[#426E6D]">
-            <h2 className="text-xl font-bold mb-3">Peminjaman Berhasil!</h2>
-            <p>Anda telah berhasil meminjam buku dengan judul {peminjamanData.judul}</p>
-            <button onClick={closeModal} className="bg-[#7a7a7a] text-white px-3 py-1 rounded-md mt-4">
-              Tutup
-            </button>
+          <div className="bg-white py-8 px-10 rounded-md">
+            <div className='text-center'>
+              <h2 className="text-2xl font-bold mb-5">Peminjaman Berhasil!</h2>
+              <p>Anda berhasil meminjam buku {peminjamanData.judul}</p>
+            </div>
+            <div className="items-center justify-center mt-8 flex text-white">
+              <button onClick={closeModal} className="bg-[#7a7a7a] px-7 py-3 rounded-lg mr-3">
+                Tutup
+              </button>
+              <button onClick={handleLihatRiwayatPeminjamanClick} className='bg-[#426E6D] py-3 rounded-lg px-4'>
+                Lihat Riwayat Peminjaman
+              </button>
+            </div>
           </div>
         </div>
       )}
+
 
       {showModalListPeminjaman && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">

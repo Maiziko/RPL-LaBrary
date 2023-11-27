@@ -30,10 +30,6 @@ interface ModalListPeminjamanProps {
     const [bookInfo, setBookInfo] = useState<Buku[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [showModalSuccess, setShowModalSuccess] = useState(false);
-    const closeModal = () => {
-        setShowModalSuccess(false);
-        router.reload();
-    };
     
   useEffect(() => {
     const fetchBookInfo = async () => {
@@ -96,7 +92,7 @@ interface ModalListPeminjamanProps {
                 await supabase.from('buku').update({ stokbuku: updatedStok }).eq('id_buku', buku.id_buku);
                   if (updatedStok === 0) {
                     // Jika stok buku 0, ubah status_ketersediaan menjadi "Tidak Tersedia"
-                    await supabase.from('buku').update({ status_ketersediaan: "Tidak Tersedia" }).eq('id_buku', buku.id_buku);
+                    await supabase.from('buku').update({ status_ketersediaan: "Tidak tersedia" }).eq('id_buku', buku.id_buku);
                   }
                 });
                 await Promise.all(updateStokPromises);
@@ -107,6 +103,7 @@ interface ModalListPeminjamanProps {
                     .from('list_peminjaman')
                     .delete()
                     .in('id_buku', idBukuYangDipinjam);
+                
                 setShowModalSuccess(true);
                 // Refresh the list page
                 // router.reload();
@@ -114,46 +111,53 @@ interface ModalListPeminjamanProps {
                 console.error('Error menambahkan peminjaman data:', (error as any).message);
             }
     }; 
+
+    const closeModal = () => {
+      setShowModalSuccess(false);
+      router.reload(); // Jika perlu reload setelah menutup modal
+    };
+
     const handleRefresh = () => {
-    setRefresh((prevRefresh) => !prevRefresh);
-  };
+      setRefresh((prevRefresh) => !prevRefresh);
+    };
   
     return (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 font-poppins">
-            <div className="bg-white p-8 rounded-2xl">
-                <h2 className="text-2xl font-bold mb-4">Konfirmasi Peminjaman</h2>
-                <div className='text-left my-1'>
-                    <div className='mb-2'>
-                        <p>Apakah Anda yakin ingin meminjam buku di bawah</p>  
-                    </div>
-                    {bookInfo.map((book, index) => (
-                        <p key={index}>{index + 1}. {book.judul}</p>
-                    ))}
-                    <div className='mt-2'>
-                        dan dikembalikan pada {returnDate} ?
-                    </div>
-                </div>
-                <div className="flex justify-end mt-4">
-                    <button className="px-4 py-2 mr-2 bg-gray-300 rounded" onClick={onClose}>
-                        Cancel
-                    </button>
-                    <button className="px-4 py-2 bg-[#C86F43] text-white rounded" onClick={handleConfirmPeminjaman} >
-                        Confirm
-                    </button>
-                </div>
+          <div className="bg-white p-8 rounded-2xl">
+            <h2 className="text-2xl font-bold mb-4">Konfirmasi Peminjaman</h2>
+            <div className='text-left my-1'>
+              <div className='mb-2'>
+                <p>Apakah Anda yakin ingin meminjam buku di bawah</p>  
+              </div>
+              {bookInfo.map((book, index) => (
+                <p key={index}>{index + 1}. {book.judul}</p>
+              ))}
+              <div className='mt-2'>
+                dan dikembalikan pada {returnDate} ?
+              </div>
             </div>
-            {/* Modal Peminjaman Berhasil */}
-      {showModalSuccess && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-5 rounded-md text-[#426E6D]">
-            <h2 className="text-xl font-bold mb-3">Peminjaman Berhasil!</h2>
-            <p>Anda telah berhasil meminjam buku</p>
-            <button onClick={closeModal} className="bg-[#7a7a7a] text-white px-3 py-1 rounded-md mt-4">
-              Tutup
-            </button>
+            <div className="flex justify-end mt-4">
+              <button className="px-4 py-2 mr-3 bg-gray-300 rounded" onClick={onClose}>
+                Batal
+              </button>
+              <button className="px-4 py-2 bg-[#C86F43] text-white rounded" onClick={handleConfirmPeminjaman} >
+                Pinjam
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+
+            {/* Modal Peminjaman Berhasil */}
+          {showModalSuccess && (
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white p-5 rounded-md text-[#426E6D]">
+                <h2 className="text-xl font-bold mb-3">Peminjaman Berhasil!</h2>
+                <p>Anda telah berhasil meminjam buku</p>
+                <button onClick={closeModal} className="bg-[#7a7a7a] text-white px-3 py-1 rounded-md mt-4">
+                  Tutup
+                </button>
+              </div>
+            </div>
+          )}
         </div>
     );
 };
