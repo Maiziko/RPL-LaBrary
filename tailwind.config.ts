@@ -2,7 +2,9 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}'
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './src/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}'
   ],
   theme: {
     extend: {
@@ -11,8 +13,22 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+
+      colors: {
+        primary: "#42898C",
+        background : "#E0E0E0",
+        disabled: "#D9D9D9"
+      },
+
+      fontFamily: {
+        'poppins': ['Poppins'],
+      },
+
     },
   },
   plugins: [],
 }
+
+
+
 export default config
