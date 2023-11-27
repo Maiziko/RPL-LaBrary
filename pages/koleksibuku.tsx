@@ -21,7 +21,7 @@ type KategoriBuku = Record<string, Buku[]>;
 
 const itemsPerPage = 12; // Set the number of items per page
 
-const koleksiBuku: React.FC = () => {
+const KoleksiBuku: React.FC = () => {
   const router = useRouter();
   const [selectedButton, setSelectedButton] = useState('Semua');
   const [screenWidth, setScreenWidth] = useState(0);
@@ -206,4 +206,4 @@ const koleksiBuku: React.FC = () => {
   );
 };
 
-export default koleksiBuku;
+export default KoleksiBuku;
